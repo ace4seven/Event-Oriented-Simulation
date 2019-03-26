@@ -1,4 +1,4 @@
-package view
+package app.view
 
 import app.Styles
 import tornadofx.*

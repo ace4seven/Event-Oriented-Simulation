@@ -1,7 +1,8 @@
+import core.MCSimulationCore
 import java.lang.Exception
 import java.util.*
 
-abstract class EventCore(val maxTime: Double) {
+abstract class EventCore(val maxTime: Double, replications: Long): MCSimulationCore(replications) {
 
     private var timeLine: PriorityQueue<EventModel> = PriorityQueue()
 
@@ -10,7 +11,7 @@ abstract class EventCore(val maxTime: Double) {
 
     private var isRunning: Boolean = true
 
-    fun simulate() {
+    private fun simulate() {
         while (timeLine.size > 0 && cTime < maxTime && isRunning) {
             val cEvent = timeLine.poll()
             cTime = cEvent.time
@@ -25,6 +26,26 @@ abstract class EventCore(val maxTime: Double) {
             throw Exception("Porušená časová kauzalita")
         }
         timeLine.add(event)
+    }
+
+    override fun beforeSimulation(core: MCSimulationCore) {
+
+    }
+
+    override fun beforeIteration(core: MCSimulationCore) {
+
+    }
+
+    override fun replication(core: MCSimulationCore) {
+        simulate()
+    }
+
+    override fun afterIteration(core: MCSimulationCore) {
+
+    }
+
+    override fun afterSimulation(core: MCSimulationCore) {
+
     }
 
 }
