@@ -1,3 +1,4 @@
+package core.generators.DEvenGenerator
 import core.generators.Generator
 
 interface DEvenGeneratorDelegate {

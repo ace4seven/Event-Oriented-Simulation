@@ -1,3 +1,4 @@
+package core.generators.DEmpiricGenerator
 import core.generators.DiscreteGenerator
 import java.lang.Exception
 import java.util.*
@@ -18,10 +19,9 @@ class DEmpiricGenerator(val dataSet: LinkedList<DEmppiricDataType>, val pGenerat
 
         dataSet.forEach {
             pTemp += it.probability
-            if (pTemp >= pRand) {
+            if (pRand < pTemp) {
                 return it.generator.generate()
             }
-            pTemp += it.probability
         }
 
         return -1

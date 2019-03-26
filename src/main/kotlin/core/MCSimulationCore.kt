@@ -1,3 +1,5 @@
+package core
+
 interface MCSimulationCoreDelegate {
     fun beforeSimulation(core: MCSimulationCore) {}
     fun beforeIteration(core: MCSimulationCore) {}
