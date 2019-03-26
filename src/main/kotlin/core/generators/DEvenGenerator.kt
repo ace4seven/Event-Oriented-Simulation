@@ -1,3 +1,5 @@
+import core.generators.Generator
+
 interface DEvenGeneratorDelegate {
     fun nextInt(): Int
 }

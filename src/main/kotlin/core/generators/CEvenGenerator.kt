@@ -1,3 +1,5 @@
+import core.generators.Generator
+
 interface CEvenGeneratorDelegate {
     fun nextDouble(): Double
 }

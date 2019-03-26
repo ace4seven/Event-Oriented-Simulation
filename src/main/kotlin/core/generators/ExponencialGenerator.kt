@@ -1,4 +1,4 @@
-import sun.rmi.rmic.Constants
+import core.generators.Generator
 import java.lang.Exception
 
 interface ExponencialGeneratorDelegate {

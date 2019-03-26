@@ -1,5 +1,5 @@
+package core.generators
 import java.util.*
-import kotlin.math.max
 
 abstract class Generator(seed: Long?) {
 
