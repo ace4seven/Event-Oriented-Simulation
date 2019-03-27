@@ -1,4 +1,5 @@
-import core.MCSimulationCore
+package core
+
 import java.lang.Exception
 import java.util.*
 
@@ -21,7 +22,7 @@ abstract class EventCore(val maxTime: Double, replications: Long): MCSimulationC
         }
     }
 
-    fun planEvent(event: EventModel) {
+    open fun planEvent(event: EventModel) {
         if (event.time < cTime) {
             throw Exception("Porušená časová kauzalita")
         }
@@ -29,23 +30,24 @@ abstract class EventCore(val maxTime: Double, replications: Long): MCSimulationC
     }
 
     override fun beforeSimulation(core: MCSimulationCore) {
-
+        println("Before simulation")
     }
 
     override fun beforeIteration(core: MCSimulationCore) {
-
+        println("Before iteration")
     }
 
     override fun replication(core: MCSimulationCore) {
+        println("Replication")
         simulate()
     }
 
     override fun afterIteration(core: MCSimulationCore) {
-
+        println("After iteration")
     }
 
     override fun afterSimulation(core: MCSimulationCore) {
-
+        println("After simulation")
     }
 
 }

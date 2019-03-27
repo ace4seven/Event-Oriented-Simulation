@@ -6,8 +6,13 @@ import support.OrderFoodGenerator
 import java.util.*
 
 fun main(args: Array<String>) {
-//    testTriangleDistribution()
-    testOrderingSession()
+    testCore()
+}
+
+private fun testCore() {
+    val rCore = RestaurantCore(10, 5, 100000.0, 10)
+
+    rCore.start()
 }
 
 private fun testTriangleDistribution() {

@@ -25,20 +25,21 @@ open class MCSimulationCore(var replication: Long): MCSimulationCoreDelegate {
         jumpDrawOnChart = (replication / chartPoints).toInt()
         simulationInProgress = true
         val self = this
-        beforeSimulation(this)
         val thread = object: Thread() {
             override fun run() {
+                beforeSimulation(self)
+
                 while(currentReplication < replication && simulationInProgress ) {
                     currentReplication += 1
                     beforeIteration(self)
                     replication(self)
                     afterIteration(self)
                 }
+
+                afterSimulation(self)
             }
         }
         thread.start()
-
-        afterSimulation(this)
     }
 
     override fun pause() {

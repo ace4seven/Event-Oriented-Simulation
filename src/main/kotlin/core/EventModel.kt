@@ -1,3 +1,5 @@
+package core
+
 abstract class EventModel: Comparable<EventModel> {
     abstract val time: Double
     abstract fun execute(core: EventCore)
