@@ -1,9 +1,10 @@
 package support
-import core.generators.DEmpiricGenerator.DEmpiricGenerator
-import core.generators.DEmpiricGenerator.DEmppiricDataType
-import core.generators.DEvenGenerator.DEvenGenerator
+
+import core.generators.DEmpiricGenerator
+import core.generators.DEmppiricDataType
+import core.generators.DEvenGenerator
 import core.generators.DiscreteGenerator
-import sun.rmi.rmic.Generator
+
 import java.util.*
 
 enum class FoodType {
@@ -21,7 +22,7 @@ enum class FoodType {
 
 data class OrderSession(val foodType: FoodType, val duration: Int)
 
-class OrderFoodGenerator(val seedGenerator: Random) {
+class FoodManager(val seedGenerator: Random) {
 
     val cesarSalattimeGenerator: DEvenGenerator = DEvenGenerator(380, 441, seedGenerator.nextLong())
     val penesarSalattimeGenerator: DEmpiricGenerator

@@ -1,4 +1,4 @@
-import core.generators.Generator
+package core.generators
 
 interface CEvenGeneratorDelegate {
     fun nextDouble(): Double
