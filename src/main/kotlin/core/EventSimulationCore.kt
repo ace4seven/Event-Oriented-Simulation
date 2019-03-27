@@ -3,9 +3,9 @@ package core
 import java.lang.Exception
 import java.util.*
 
-abstract class EventCore(val maxTime: Double, replications: Long): MCSimulationCore(replications) {
+abstract class EventSimulationCore(val maxTime: Double, replications: Long): MCSimulationCore(replications) {
 
-    private var timeLine: PriorityQueue<EventModel> = PriorityQueue()
+    private var timeLine: PriorityQueue<Event> = PriorityQueue()
 
     var cTime: Double = 0.0
         private set
@@ -22,7 +22,7 @@ abstract class EventCore(val maxTime: Double, replications: Long): MCSimulationC
         }
     }
 
-    open fun planEvent(event: EventModel) {
+    open fun planEvent(event: Event) {
         if (event.time < cTime) {
             throw Exception("Porušená časová kauzalita")
         }

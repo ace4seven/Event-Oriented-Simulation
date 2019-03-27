@@ -1,4 +1,4 @@
-package app
+package app.view
 
 import javafx.scene.text.FontWeight
 import tornadofx.Stylesheet

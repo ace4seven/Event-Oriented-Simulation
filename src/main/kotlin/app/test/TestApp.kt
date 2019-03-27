@@ -1,5 +1,6 @@
-package app
+package app.test
 
+import core.RestaurantSimulationCore
 import core.generators.TriangleGenerator
 import support.FoodType
 import support.OrderFoodGenerator
@@ -10,7 +11,7 @@ fun main(args: Array<String>) {
 }
 
 private fun testCore() {
-    val rCore = RestaurantCore(10, 5, 100000.0, 10)
+    val rCore = RestaurantSimulationCore(10, 5, 100000.0, 10)
 
     rCore.start()
 }

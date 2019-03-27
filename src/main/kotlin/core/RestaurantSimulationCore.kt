@@ -1,9 +1,8 @@
-package app
+package core
 
 import app.model.Chef
 import app.model.Customer
 import app.model.Waiter
-import core.EventCore
 import core.generators.CEvenGenerator
 import core.generators.ExponencialGenerator
 import core.generators.TriangleGenerator
@@ -13,7 +12,7 @@ import support.Queue
 import support.TableManager
 import java.util.*
 
-class RestaurantCore(val numberOfWaiters: Int, val numberOfCooks: Int, time: Double, replications: Long): EventCore(time, replications) {
+class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int, time: Double, replications: Long): EventSimulationCore(time, replications) {
 
     private val seedGenerator = Random()
 
@@ -42,5 +41,11 @@ class RestaurantCore(val numberOfWaiters: Int, val numberOfCooks: Int, time: Dou
     val eatFoodGenerator = TriangleGenerator(180.0, 1800.0, 900.0, seedGenerator.nextLong())
     val payGenerator = CEvenGenerator(43.0, 97.0, seedGenerator.nextLong())
     val durationFoodToCustomerGenerator = CEvenGenerator(23.0, 80.0, seedGenerator.nextLong())
+
+    init {
+        for (i in 0..numberOfWaiters) { freeWaiters.add(Waiter()) }
+        for (i in 0..numberOfChefs) { freeChefs.add(Chef()) }
+
+    }
 
 }
