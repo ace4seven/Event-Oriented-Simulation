@@ -1,6 +1,7 @@
 package core
 
 abstract class Event: Comparable<Event> {
+
     abstract val time: Double
     abstract fun execute(simulationCore: EventSimulationCore)
 

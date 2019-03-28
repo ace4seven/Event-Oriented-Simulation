@@ -62,7 +62,7 @@ class FoodManager(val seedGenerator: Random) {
         spagetyGenerator = DEmpiricGenerator(spagetyDataset, Random(seedGenerator.nextLong()))
     }
 
-    fun getOrder(): OrderSession {
+    fun prepareOrder(): OrderSession {
         val prob = probability.nextDouble()
         var pTemp = 0.35
 

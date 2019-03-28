@@ -2,27 +2,28 @@ package app.model
 
 abstract class Worker {
 
-    private var noWorkingTime = 0.0
+    private var workingTime = 0.0
 
-    private var startWorkTime = 0.0
-    private var stopWorking = 0.0
+    private var startWorkingTime = 0.0
+    private var stopWorkingTime = 0.0
 
     fun startWorking(time: Double) {
-        startWorkTime = time
+        startWorkingTime = time
     }
 
     fun stopWorking(time: Double) {
-        stopWorking = time
+        stopWorkingTime = time
+        workingTime += stopWorkingTime - startWorkingTime
     }
 
-    fun getNoWorkingTime(): Double {
-        return noWorkingTime
+    fun getWorkingTime(): Double {
+        return workingTime
     }
 
     fun resetTimes() {
-        noWorkingTime = 0.0
-        startWorkTime = 0.0
-        stopWorking = 0.0
+        workingTime = 0.0
+        startWorkingTime = 0.0
+        stopWorkingTime = 0.0
     }
 
 }

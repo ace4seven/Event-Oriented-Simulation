@@ -1,8 +1,7 @@
 package core
 
-import app.model.Chef
-import app.model.Customer
-import app.model.Waiter
+import app.events.ArrivalGroupEvent
+import app.model.*
 import core.generators.CEvenGenerator
 import core.generators.ExponencialGenerator
 import core.generators.TriangleGenerator
@@ -21,10 +20,10 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     val foodManager = FoodManager(seedGenerator)
 
     // MARK: - QUEUES
-    val serviceQueue = Queue<Customer>()
-    val ordersQueue = Queue<OrderSession>()
-    val finishedMealsQueue = Queue<Customer>()
-    val paymentQueue = Queue<Customer>()
+    val fifoService = Queue<CustomerGroup>()
+    val fifoOrder = Queue<Order>()
+    val fifoFinishMeal = Queue<CustomerGroup>()
+    val fifoPayment = Queue<CustomerGroup>()
 
     // MARK: - Priority FRONTS
     var freeWaiters: PriorityQueue<Waiter> = PriorityQueue()
@@ -43,9 +42,15 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     val durationFoodToCustomerGenerator = CEvenGenerator(23.0, 80.0, seedGenerator.nextLong())
 
     init {
-        for (i in 0..numberOfWaiters) { freeWaiters.add(Waiter()) }
-        for (i in 0..numberOfChefs) { freeChefs.add(Chef()) }
+        for (i in 1..numberOfWaiters) { freeWaiters.add(Waiter()) }
+        for (i in 1..numberOfChefs) { freeChefs.add(Chef()) }
 
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.ONE)))
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.TWO)))
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.THREE)))
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.FOUR)))
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.FIVE)))
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.SIX)))
     }
 
 }
