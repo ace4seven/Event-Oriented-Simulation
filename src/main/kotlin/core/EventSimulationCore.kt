@@ -3,14 +3,19 @@ package core
 import java.lang.Exception
 import java.util.*
 
-abstract class EventCore(val maxTime: Double, replications: Long): MCSimulationCore(replications) {
+abstract class EventSimulationCore(val maxTime: Double, replications: Long): MCSimulationCore(replications) {
 
-    private var timeLine: PriorityQueue<EventModel> = PriorityQueue()
+    private var timeLine: PriorityQueue<Event> = PriorityQueue()
+    private var skipTime: Double = 100.0
 
     var cTime: Double = 0.0
         private set
 
     private var isRunning: Boolean = true
+
+    init {
+        planEvent(SystemEvent(cTime))
+    }
 
     private fun simulate() {
         while (timeLine.size > 0 && cTime < maxTime && isRunning) {
@@ -22,7 +27,15 @@ abstract class EventCore(val maxTime: Double, replications: Long): MCSimulationC
         }
     }
 
-    open fun planEvent(event: EventModel) {
+    open fun changeSkipTime(time: Double) {
+        skipTime = time
+    }
+
+    open fun getSkipTime(): Double {
+        return skipTime
+    }
+
+    open fun planEvent(event: Event) {
         if (event.time < cTime) {
             throw Exception("Porušená časová kauzalita")
         }

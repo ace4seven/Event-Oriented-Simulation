@@ -1,6 +1,4 @@
-package core.generators.DEmpiricGenerator
-import core.generators.DiscreteGenerator
-import java.lang.Exception
+package core.generators
 import java.util.*
 
 interface DEmpiricGeneratorDelegate {

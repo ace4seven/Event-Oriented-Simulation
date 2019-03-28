@@ -3,8 +3,8 @@ package app.model
 class Waiter: Comparable<Waiter>, Worker() {
 
     override fun compareTo(other: Waiter): Int {
-        if (getNoWorkingTime() == other.getNoWorkingTime()) { return 0 }
-        if (getNoWorkingTime() < other.getNoWorkingTime()) { return -1 }
+        if (getWorkingTime() == other.getWorkingTime()) { return 0 }
+        if (getWorkingTime() < other.getWorkingTime()) { return -1 }
 
         return 1
     }

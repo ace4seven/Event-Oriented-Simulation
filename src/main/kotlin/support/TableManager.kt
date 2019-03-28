@@ -3,7 +3,15 @@ package support
 import app.model.CustomerGroupType
 
 enum class TableType {
-    TWO, FOUR, SIX
+    TWO, FOUR, SIX;
+
+    fun desc(): String {
+        when (this) {
+            TWO -> return "Stol pre dvoch"
+            FOUR -> return "Stol pre štyroch"
+            SIX -> return "Stol pre šiestych"
+        }
+    }
 }
 
 class TableManager {

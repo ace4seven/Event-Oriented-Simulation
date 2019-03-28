@@ -1,10 +1,11 @@
 package core
 
-abstract class EventModel: Comparable<EventModel> {
-    abstract val time: Double
-    abstract fun execute(core: EventCore)
+abstract class Event: Comparable<Event> {
 
-    override fun compareTo(other: EventModel): Int {
+    abstract val time: Double
+    abstract fun execute(simulationCore: EventSimulationCore)
+
+    override fun compareTo(other: Event): Int {
         if (time == other.time) { return 0 }
         if (time < other.time) { return -1 }
 

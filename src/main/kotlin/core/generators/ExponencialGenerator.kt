@@ -1,4 +1,5 @@
-import core.generators.Generator
+package core.generators
+
 import java.lang.Exception
 
 interface ExponencialGeneratorDelegate {

@@ -1,5 +1,4 @@
-package core.generators.DEvenGenerator
-import core.generators.Generator
+package core.generators
 
 interface DEvenGeneratorDelegate {
     fun nextInt(): Int
