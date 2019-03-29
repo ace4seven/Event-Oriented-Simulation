@@ -1,15 +1,15 @@
 package app.events
 
+import app.model.Chef
 import core.Event
 import core.EventSimulationCore
 import core.RestaurantSimulationCore
 
-class BeginCookEvent(override val time: Double): Event() {
+class BeginCookEvent(override val time: Double, val chef: Chef): Event() {
 
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        val chef = rCore.freeChefs.poll()
         chef.startWorking(simulationCore.cTime)
 
         val meal = rCore.fifoOrder.pop()!!

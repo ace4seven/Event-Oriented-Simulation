@@ -17,11 +17,11 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
         rCore.tableManager.freeTable(customerGroup.table())
 
         if (rCore.fifoService.size() > 0) {
-            rCore.planEvent(BeginOrderEvent(time, rCore.fifoService.pop()!!))
+            rCore.planEvent(BeginOrderEvent(time, rCore.fifoService.pop()!!, rCore.freeWaiters.poll()))
         } else if (rCore.fifoFinishMeal.size() > 0) {
-            rCore.planEvent(BeginTransportMealEvent(time))
+            rCore.planEvent(BeginTransportMealEvent(time,  rCore.freeWaiters.poll()))
         } else if (rCore.fifoPayment.size() > 0) {
-            rCore.planEvent(BeginPayEvent(time, rCore.fifoPayment.pop()!!))
+            rCore.planEvent(BeginPayEvent(time, rCore.fifoPayment.pop()!!, rCore.freeWaiters.poll()))
         }
 
         C.message("Koniec platenia pre: ${customerGroup.type.desc()}")

@@ -26,12 +26,14 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
         val freeTable = rCore.tableManager.findedTable(customerGroup.type)
 
         if (freeTable == null) {
+            // TODO statistika
             C.message("Odcháza z dôvodu plnej kapacity stolov: ${customerGroup.type.desc()}")
         } else {
             customerGroup.addTable(freeTable)
             C.message("Zaradeny stôl: ${freeTable.desc()}")
             if (rCore.freeWaiters.size > 0) {
-                rCore.planEvent(BeginOrderEvent(rCore.cTime, customerGroup))
+                val waiter = rCore.freeWaiters.poll()
+                rCore.planEvent(BeginOrderEvent(rCore.cTime, customerGroup, waiter))
                 C.message("Začiatok objednávky pre skupinu: ${customerGroup.type.desc()}")
             } else {
                 rCore.fifoService.add(customerGroup)

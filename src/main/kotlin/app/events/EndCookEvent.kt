@@ -17,12 +17,12 @@ class EndCookEvent(override val time: Double, val chef: Chef, val order: Order):
         if (order.customerGroup.isReadyForDeploy()) {
             rCore.fifoFinishMeal.add(order.customerGroup)
             if (rCore.freeWaiters.size > 0) {
-                rCore.planEvent(BeginTransportMealEvent(rCore.cTime))
+                rCore.planEvent(BeginTransportMealEvent(rCore.cTime, rCore.freeWaiters.poll()))
             }
         }
 
         if (rCore.fifoOrder.size() > 0) {
-            rCore.planEvent(BeginCookEvent(rCore.cTime))
+            rCore.planEvent(BeginCookEvent(rCore.cTime, rCore.freeChefs.poll()))
         }
 
         C.message("Koniec varenia: ${order.orderSession.foodType.foodName()} pre ${order.customerGroup.type.desc()}")

@@ -11,7 +11,7 @@ class EndEatingEvent(override val time: Double, val customerGroup: CustomerGroup
         val rCore = simulationCore as RestaurantSimulationCore
 
         if (rCore.freeWaiters.size > 0) {
-            rCore.planEvent(BeginPayEvent(rCore.cTime, customerGroup))
+            rCore.planEvent(BeginPayEvent(rCore.cTime, customerGroup, rCore.freeWaiters.poll()))
         } else {
             rCore.fifoPayment.add(customerGroup)
         }

@@ -15,7 +15,6 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
         rCore.freeWaiters.add(waiter)
 
         var finishEatingTime = 0.0
-
         for (i in 1..customerGroup.type.count()) {
             val customerEatingTime = rCore.eatFoodGenerator.nextDouble()
             if (finishEatingTime < customerEatingTime) {
@@ -24,11 +23,11 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
         }
 
         if (rCore.fifoService.size() > 0) {
-            rCore.planEvent(BeginOrderEvent(time, rCore.fifoService.pop()!!))
+            rCore.planEvent(BeginOrderEvent(time, rCore.fifoService.pop()!!, rCore.freeWaiters.poll()))
         } else if (rCore.fifoFinishMeal.size() > 0) {
-            rCore.planEvent(BeginTransportMealEvent(time))
+            rCore.planEvent(BeginTransportMealEvent(time,  rCore.freeWaiters.poll()))
         } else if (rCore.fifoPayment.size() > 0) {
-            rCore.planEvent(BeginPayEvent(time, rCore.fifoPayment.pop()!!))
+            rCore.planEvent(BeginPayEvent(time, rCore.fifoPayment.pop()!!, rCore.freeWaiters.poll()))
         }
 
         rCore.planEvent(EndEatingEvent(rCore.cTime + finishEatingTime, customerGroup))

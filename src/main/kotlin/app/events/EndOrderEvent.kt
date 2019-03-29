@@ -16,19 +16,19 @@ class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup,
             rCore.fifoOrder.add(Order(rCore.foodManager.prepareOrder(), customerGroup))
         }
 
-        waiter.stopWorking(time)
+        waiter.stopWorking(rCore.cTime)
         rCore.freeWaiters.add(waiter)
 
         if (rCore.fifoService.size() > 0) {
-            rCore.planEvent(BeginOrderEvent(time, rCore.fifoService.pop()!!))
+            rCore.planEvent(BeginOrderEvent(time, rCore.fifoService.pop()!!, rCore.freeWaiters.poll()))
         } else if (rCore.fifoFinishMeal.size() > 0) {
-            rCore.planEvent(BeginTransportMealEvent(time))
+            rCore.planEvent(BeginTransportMealEvent(time,  rCore.freeWaiters.poll()))
         } else if (rCore.fifoPayment.size() > 0) {
-            rCore.planEvent(BeginPayEvent(time, rCore.fifoPayment.pop()!!))
+            rCore.planEvent(BeginPayEvent(time, rCore.fifoPayment.pop()!!, rCore.freeWaiters.poll()))
         }
 
         if (rCore.freeChefs.size > 0) {
-            rCore.planEvent(BeginCookEvent(time))
+            rCore.planEvent(BeginCookEvent(time, rCore.freeChefs.poll()))
         }
 
         C.message("Ukončenie objednávania pre: ${customerGroup.type.desc()}")
