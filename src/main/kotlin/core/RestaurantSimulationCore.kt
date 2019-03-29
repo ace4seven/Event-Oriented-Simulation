@@ -45,23 +45,48 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     val durationFoodToCustomerGenerator = CEvenGenerator(23.0, 80.0, seedGenerator.nextLong())
 
     init {
+        initializePersonal()
+        prepareForSimulation()
+    }
+
+    override fun afterSimulation(core: MCSimulationCore) {
+        super.afterSimulation(core)
+
+        println(stats.repResult / stats.replication)
+    }
+
+    override fun afterReplication(core: MCSimulationCore) {
+        super.afterReplication(core)
+
+        initializePersonal()
+        prepareForSimulation()
+        emptyQueues()
+
+        stats.incResult()
+    }
+
+    private fun initializePersonal() {
+        freeWaiters.clear()
+        freeChefs.clear()
+
         for (i in 1..numberOfWaiters) { freeWaiters.add(Waiter()) }
         for (i in 1..numberOfChefs) { freeChefs.add(Chef()) }
+    }
 
+    private fun emptyQueues() {
+        fifoService.clear()
+        fifoFinishMeal.clear()
+        fifoOrder.clear()
+        fifoService.clear()
+    }
+
+    private fun prepareForSimulation() {
         planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.ONE)))
         planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.TWO)))
         planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.THREE)))
         planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.FOUR)))
         planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.FIVE)))
         planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.SIX)))
-    }
-
-    override fun afterSimulation(core: MCSimulationCore) {
-        print(stats.repResult)
-    }
-
-    override fun afterIteration(core: MCSimulationCore) {
-        stats.incResult()
     }
 
 }

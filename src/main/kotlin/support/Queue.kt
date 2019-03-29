@@ -27,4 +27,8 @@ class Queue<Any> {
         return items[0]
     }
 
+    fun clear() {
+        items.clear()
+    }
+
 }

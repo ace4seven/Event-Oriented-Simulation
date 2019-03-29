@@ -9,6 +9,7 @@ class Statistics {
 
     fun incResult() {
         repResult +=  time / count.toDouble()
+        replication += 1
         time = 0.0
         count = 0
     }

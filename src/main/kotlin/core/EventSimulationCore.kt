@@ -43,23 +43,24 @@ abstract class EventSimulationCore(val maxTime: Double, replications: Long): MCS
     }
 
     override fun beforeSimulation(core: MCSimulationCore) {
-        println("Before simulation")
+
     }
 
-    override fun beforeIteration(core: MCSimulationCore) {
-        println("Before iteration")
+    override fun beforeReplication(core: MCSimulationCore) {
+
     }
 
     override fun replication(core: MCSimulationCore) {
         simulate()
     }
 
-    override fun afterIteration(core: MCSimulationCore) {
-        println("After iteration")
+    override fun afterReplication(core: MCSimulationCore) {
+        cTime = 0.0
+        timeLine.clear()
     }
 
     override fun afterSimulation(core: MCSimulationCore) {
-
+        print("Simulation end")
     }
 
 }

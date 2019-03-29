@@ -2,12 +2,12 @@ package core
 
 interface MCSimulationCoreDelegate {
     fun beforeSimulation(core: MCSimulationCore) {}
-    fun beforeIteration(core: MCSimulationCore) {}
+    fun beforeReplication(core: MCSimulationCore) {}
     fun start()
     fun pause()
     fun clear()
     fun replication(core: MCSimulationCore)
-    fun afterIteration(core: MCSimulationCore) {}
+    fun afterReplication(core: MCSimulationCore) {}
     fun afterSimulation(core: MCSimulationCore) {}
 }
 
@@ -28,14 +28,12 @@ open class MCSimulationCore(var replication: Long): MCSimulationCoreDelegate {
         val thread = object: Thread() {
             override fun run() {
                 beforeSimulation(self)
-
                 while(currentReplication < replication && simulationInProgress ) {
                     currentReplication += 1
-                    beforeIteration(self)
+                    beforeReplication(self)
                     replication(self)
-                    afterIteration(self)
+                    afterReplication(self)
                 }
-
                 afterSimulation(self)
             }
         }
@@ -56,8 +54,8 @@ open class MCSimulationCore(var replication: Long): MCSimulationCoreDelegate {
 
     override fun replication(core: MCSimulationCore) {}
     override fun beforeSimulation(core: MCSimulationCore) {}
-    override fun beforeIteration(core: MCSimulationCore) {}
-    override fun afterIteration(core: MCSimulationCore) {}
+    override fun beforeReplication(core: MCSimulationCore) {}
+    override fun afterReplication(core: MCSimulationCore) {}
     override fun afterSimulation(core: MCSimulationCore) {}
 
 }
