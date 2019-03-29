@@ -31,7 +31,7 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
             C.message("Odcháza z dôvodu plnej kapacity stolov: ${customerGroup.type.desc()}")
         } else {
             customerGroup.addTable(freeTable)
-            C.message("Zaradeny stôl: ${freeTable.desc()}")
+            C.message("Zaradeny stôl: ${freeTable.type.desc()}")
             if (rCore.freeWaiters.size > 0) {
                 val waiter = rCore.freeWaiters.poll()
                 rCore.planEvent(BeginOrderEvent(rCore.cTime, customerGroup, waiter))

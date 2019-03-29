@@ -13,4 +13,5 @@ class Statistics {
         time = 0.0
         count = 0
     }
+
 }

@@ -1,5 +1,6 @@
 package app.model
 
+import support.RestaurantTable
 import support.TableType
 
 enum class CustomerGroupType {
@@ -31,15 +32,15 @@ enum class CustomerGroupType {
 
 class CustomerGroup(id: Int, val type: CustomerGroupType): Person(id) {
 
-    private var tableType: TableType? = null
+    private var restaurantTable: RestaurantTable? = null
     private var finishedMeals: Int = 0
 
-    fun addTable(type: TableType) {
-        this.tableType = type
+    fun addTable(table: RestaurantTable) {
+        this.restaurantTable = table
     }
 
-    fun table(): TableType {
-        return tableType!!
+    fun table(): RestaurantTable {
+        return restaurantTable!!
     }
 
     fun incMeals() {
