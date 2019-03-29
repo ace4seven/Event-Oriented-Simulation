@@ -10,27 +10,27 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        var time = 0.0
+        var nextCome = 0.0
         when (customerGroup.type) {
-            CustomerGroupType.ONE -> time = rCore.oneCustomerGenerator.nextDouble()
-            CustomerGroupType.TWO -> time = rCore.twoCustomerGenerator.nextDouble()
-            CustomerGroupType.THREE -> time = rCore.threeCustomerGenerator.nextDouble()
-            CustomerGroupType.FOUR -> time = rCore.fourCustomerGenerator.nextDouble()
-            CustomerGroupType.FIVE -> time = rCore.fiveCustomerGenerator.nextDouble()
-            CustomerGroupType.SIX -> time = rCore.sixCustomerGenerator.nextDouble()
+            CustomerGroupType.ONE -> nextCome = rCore.oneCustomerGenerator.nextDouble()
+            CustomerGroupType.TWO -> nextCome = rCore.twoCustomerGenerator.nextDouble()
+            CustomerGroupType.THREE -> nextCome = rCore.threeCustomerGenerator.nextDouble()
+            CustomerGroupType.FOUR -> nextCome = rCore.fourCustomerGenerator.nextDouble()
+            CustomerGroupType.FIVE -> nextCome = rCore.fiveCustomerGenerator.nextDouble()
+            CustomerGroupType.SIX -> nextCome = rCore.sixCustomerGenerator.nextDouble()
         }
 
-        rCore.planEvent(ArrivalGroupEvent(time + simulationCore.cTime, CustomerGroup(customerGroup.type)))
+        rCore.planEvent(ArrivalGroupEvent(nextCome + simulationCore.cTime, CustomerGroup(customerGroup.type)))
         C.message("Plán skupiny: ${customerGroup.type.desc()} v s.č: ${time}")
 
         val freeTable = rCore.tableManager.findedTable(customerGroup.type)
 
         if (freeTable == null) {
-            C.message("Odcháza: ${customerGroup.type.desc()}")
+            C.message("Odcháza z dôvodu plnej kapacity stolov: ${customerGroup.type.desc()}")
         } else {
             customerGroup.addTable(freeTable)
             C.message("Zaradeny stôl: ${freeTable.desc()}")
-            if (rCore.freeWaiters.count() > 0) {
+            if (rCore.freeWaiters.size > 0) {
                 rCore.planEvent(BeginOrderEvent(rCore.cTime, customerGroup))
                 C.message("Začiatok objednávky pre skupinu: ${customerGroup.type.desc()}")
             } else {

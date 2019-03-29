@@ -51,7 +51,6 @@ abstract class EventSimulationCore(val maxTime: Double, replications: Long): MCS
     }
 
     override fun replication(core: MCSimulationCore) {
-        println("Replication")
         simulate()
     }
 
@@ -60,7 +59,7 @@ abstract class EventSimulationCore(val maxTime: Double, replications: Long): MCS
     }
 
     override fun afterSimulation(core: MCSimulationCore) {
-        println("After simulation")
+
     }
 
 }

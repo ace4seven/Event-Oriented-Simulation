@@ -14,6 +14,8 @@ class BeginCookEvent(override val time: Double): Event() {
 
         val meal = rCore.fifoOrder.pop()!!
 
+        rCore.stats.count += 1
+        rCore.stats.time += meal.orderSession.duration
         meal.customerGroup.incMeals()
         rCore.planEvent(EndCookEvent(simulationCore.cTime + meal.orderSession.duration, chef, meal))
 

@@ -2,6 +2,7 @@ package core
 
 import app.events.ArrivalGroupEvent
 import app.model.*
+import app.stats.Statistics
 import core.generators.CEvenGenerator
 import core.generators.ExponencialGenerator
 import core.generators.TriangleGenerator
@@ -14,6 +15,8 @@ import java.util.*
 class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int, time: Double, replications: Long): EventSimulationCore(time, replications) {
 
     private val seedGenerator = Random()
+
+    var stats = Statistics()
 
     // MARK: MANAGERS
     val tableManager = TableManager()
@@ -51,6 +54,14 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
         planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.FOUR)))
         planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.FIVE)))
         planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.SIX)))
+    }
+
+    override fun afterSimulation(core: MCSimulationCore) {
+        print(stats.repResult)
+    }
+
+    override fun afterIteration(core: MCSimulationCore) {
+        stats.incResult()
     }
 
 }

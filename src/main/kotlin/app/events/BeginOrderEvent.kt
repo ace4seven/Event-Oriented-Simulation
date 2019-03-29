@@ -11,9 +11,9 @@ class BeginOrderEvent(override val time: Double, val customerGroup: CustomerGrou
         val rCore = simulationCore as RestaurantSimulationCore
 
         val waiter = rCore.freeWaiters.poll()
-        waiter.startWorking(time)
+        waiter.startWorking(rCore.cTime)
 
-        rCore.planEvent(EndOrderEvent(time + rCore.serviceGenerator.nextDouble(), customerGroup, waiter))
+        rCore.planEvent(EndOrderEvent(rCore.cTime + rCore.serviceGenerator.nextDouble(), customerGroup, waiter))
 
         C.message("Zaciatok objednávky pre: ${customerGroup.type.desc()}")
     }
