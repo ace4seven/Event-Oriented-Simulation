@@ -29,7 +29,7 @@ enum class CustomerGroupType {
 
 }
 
-class CustomerGroup(val type: CustomerGroupType) {
+class CustomerGroup(id: Int, val type: CustomerGroupType): Person(id) {
 
     private var tableType: TableType? = null
     private var finishedMeals: Int = 0

@@ -1,6 +1,6 @@
 package app.model
 
-abstract class Worker {
+abstract class Worker(id: Int): Person(id) {
 
     private var workingTime = 0.0
 

@@ -16,6 +16,8 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
 
     private val seedGenerator = Random()
 
+    var customerGroupID = 1
+
     var stats = Statistics()
 
     // MARK: MANAGERS
@@ -69,8 +71,8 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
         freeWaiters.clear()
         freeChefs.clear()
 
-        for (i in 1..numberOfWaiters) { freeWaiters.add(Waiter()) }
-        for (i in 1..numberOfChefs) { freeChefs.add(Chef()) }
+        for (i in 1..numberOfWaiters) { freeWaiters.add(Waiter(i)) }
+        for (i in 1..numberOfChefs) { freeChefs.add(Chef(i)) }
     }
 
     private fun emptyQueues() {
@@ -81,12 +83,22 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     }
 
     private fun prepareForSimulation() {
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.ONE)))
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.TWO)))
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.THREE)))
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.FOUR)))
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.FIVE)))
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(CustomerGroupType.SIX)))
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.ONE)))
+
+        customerGroupID += 1
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.TWO)))
+
+        customerGroupID += 1
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.THREE)))
+
+        customerGroupID += 1
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.FOUR)))
+
+        customerGroupID += 1
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.FIVE)))
+
+        customerGroupID += 1
+        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.SIX)))
     }
 
 }

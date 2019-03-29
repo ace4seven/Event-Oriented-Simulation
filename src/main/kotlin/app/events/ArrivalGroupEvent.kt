@@ -20,7 +20,8 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
             CustomerGroupType.SIX -> nextCome = rCore.sixCustomerGenerator.nextDouble()
         }
 
-        rCore.planEvent(ArrivalGroupEvent(nextCome + simulationCore.cTime, CustomerGroup(customerGroup.type)))
+        rCore.customerGroupID += 1
+        rCore.planEvent(ArrivalGroupEvent(nextCome + simulationCore.cTime, CustomerGroup(rCore.customerGroupID, customerGroup.type)))
         C.message("Plán skupiny: ${customerGroup.type.desc()} v s.č: ${time}")
 
         val freeTable = rCore.tableManager.findedTable(customerGroup.type)

@@ -1,6 +1,6 @@
 package app.model
 
-class Waiter: Comparable<Waiter>, Worker() {
+class Waiter(id: Int): Comparable<Waiter>, Worker(id) {
 
     override fun compareTo(other: Waiter): Int {
         if (getWorkingTime() == other.getWorkingTime()) { return 0 }
