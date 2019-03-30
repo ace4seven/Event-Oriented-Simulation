@@ -1,9 +1,11 @@
 package app.stats
 
-private class RStatistics() {
-    var averageWaitingForService: Double = 0.0
-    var averageWaitingForMeal: Double = 0.0
-    var averageWaitingForPay: Double = 0.0
+import core.ConfidenceInterval
+
+private class RStatistics {
+    var averageWaitingForService = ConfidenceInterval()
+    var averageWaitingForMeal = ConfidenceInterval()
+    var averageWaitingForPay = ConfidenceInterval()
 
     var leavePercentage: Double = 0.0
 
@@ -13,7 +15,7 @@ private class RStatistics() {
 }
 
 enum class AverageWaitingType {
-    SERVICE, MEAL, PAY, ALL
+    SERVICE, MEAL, PAY
 }
 
 class Statistics(val rTime: Double) {
@@ -45,13 +47,39 @@ class Statistics(val rTime: Double) {
         return rStatistics.leavePercentage / cReplication
     }
 
-    fun getAverageTimeCustomerWait(type: AverageWaitingType): Double {
+    fun getAverageTimeCustomerWait(type: AverageWaitingType? = null): Triple<Double?, Double, Double?> {
+        if (type == null) {
+            var isLeft: Double? = null
+            var isRight: Double? = null
+
+            if (cReplication > 30) {
+                isLeft = rStatistics.averageWaitingForService.ISLeft()!! + rStatistics.averageWaitingForMeal.ISLeft()!! + rStatistics.averageWaitingForPay.ISLeft()!!
+                isRight = rStatistics.averageWaitingForService.ISRight()!! + rStatistics.averageWaitingForMeal.ISRight()!! + rStatistics.averageWaitingForPay.ISRight()!!
+
+            }
+            val median = rStatistics.averageWaitingForMeal.median() + rStatistics.averageWaitingForPay.median() + rStatistics.averageWaitingForService.median()
+
+            return Triple(isLeft, median, isRight)
+        }
+
         when (type) {
-            AverageWaitingType.SERVICE -> return rStatistics.averageWaitingForService / cReplication.toDouble()
-            AverageWaitingType.MEAL -> return rStatistics.averageWaitingForMeal / cReplication.toDouble()
-            AverageWaitingType.PAY -> return rStatistics.averageWaitingForPay / cReplication.toDouble()
-            AverageWaitingType.ALL -> {
-                return (rStatistics.averageWaitingForPay + rStatistics.averageWaitingForMeal + rStatistics.averageWaitingForService) / cReplication
+            AverageWaitingType.SERVICE -> {
+                return Triple(
+                        rStatistics.averageWaitingForService.ISLeft(),
+                        rStatistics.averageWaitingForService.median(),
+                        rStatistics.averageWaitingForService.ISRight())
+            }
+            AverageWaitingType.MEAL -> {
+                return Triple(
+                        rStatistics.averageWaitingForMeal.ISLeft(),
+                        rStatistics.averageWaitingForMeal.median(),
+                        rStatistics.averageWaitingForMeal.ISRight())
+            }
+            AverageWaitingType.PAY -> {
+                return Triple(
+                        rStatistics.averageWaitingForPay.ISLeft(),
+                        rStatistics.averageWaitingForPay.median(),
+                        rStatistics.averageWaitingForPay.ISRight())
             }
         }
     }
@@ -77,9 +105,9 @@ class Statistics(val rTime: Double) {
     }
 
     fun updateWithReplication() {
-        rStatistics.averageWaitingForService += (averageWaitingForService / (customersSums - leavedCustomers))
-        rStatistics.averageWaitingForMeal += (averageWaitingForMeal / (customersSums - leavedCustomers))
-        rStatistics.averageWaitingForPay += (averageWaitingForPay / (customersSums - leavedCustomers))
+        rStatistics.averageWaitingForService.addMedianPart((averageWaitingForService / (customersSums - leavedCustomers)))
+        rStatistics.averageWaitingForMeal.addMedianPart((averageWaitingForMeal / (customersSums - leavedCustomers)))
+        rStatistics.averageWaitingForPay.addMedianPart((averageWaitingForPay / (customersSums - leavedCustomers)))
 
         averageWorkingTimesWaiters.forEach {
             val prev = rStatistics.averageWorkingTimesWaiters[it.key]

@@ -55,10 +55,12 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     override fun afterSimulation(core: MCSimulationCore) {
         super.afterSimulation(core)
 
-        println("Priemerny cas cakania je: ${stats.getAverageTimeCustomerWait(AverageWaitingType.ALL)}")
-        println("Priemerny cas cakania SERVIS: ${stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE)}")
-        println("Priemerny cas cakania PAY: ${stats.getAverageTimeCustomerWait(AverageWaitingType.PAY)}")
-        println("Priemerny cas cakania MEAL: ${stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL)}")
+//        println("Priemerny cas cakania je: ${stats.getAverageTimeCustomerWait(AverageWaitingType.ALL)}")
+        println("LAVY IS: ${stats.getAverageTimeCustomerWait().first}")
+        println("Priemerny cas cakania SERVIS: ${stats.getAverageTimeCustomerWait().second}")
+        println("PRAVY IS: ${stats.getAverageTimeCustomerWait().third}")
+//        println("Priemerny cas cakania PAY: ${stats.getAverageTimeCustomerWait(AverageWaitingType.PAY)}")
+//        println("Priemerny cas cakania MEAL: ${stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL)}")
         println("LEAVE - : ${stats.getLeavedCustomersPercentage() * 100.0}")
         stats.getAverageWorkingTimes()
     }
