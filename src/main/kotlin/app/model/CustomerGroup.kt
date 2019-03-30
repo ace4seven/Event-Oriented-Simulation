@@ -1,5 +1,6 @@
 package app.model
 
+import app.stats.AverageWaitingStat
 import support.RestaurantTable
 import support.TableType
 
@@ -31,6 +32,8 @@ enum class CustomerGroupType {
 }
 
 class CustomerGroup(id: Int, val type: CustomerGroupType): Person(id) {
+
+    val averageWaiting = AverageWaitingStat()
 
     private var restaurantTable: RestaurantTable? = null
     private var finishedMeals: Int = 0

@@ -2,6 +2,7 @@ package app.events
 
 import app.model.CustomerGroup
 import app.model.Waiter
+import app.stats.WaitType
 import core.Event
 import core.EventSimulationCore
 import core.RestaurantSimulationCore
@@ -10,6 +11,9 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
 
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
+
+        customerGroup.averageWaiting.stopTrack(rCore.cTime, WaitType.FORMEAL)
+        rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORMEAL), customerGroup.type.count())
 
         waiter.stopWorking(rCore.cTime)
         rCore.freeWaiters.add(waiter)
@@ -23,11 +27,14 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
         }
 
         if (rCore.fifoService.size() > 0) {
-            rCore.planEvent(BeginOrderEvent(time, rCore.fifoService.pop()!!, rCore.freeWaiters.poll()))
+            val group = rCore.fifoService.pop()!!
+            rCore.planEvent(BeginOrderEvent(time, group, rCore.freeWaiters.poll()))
         } else if (rCore.fifoFinishMeal.size() > 0) {
-            rCore.planEvent(BeginTransportMealEvent(time,  rCore.freeWaiters.poll()))
+            val meal = rCore.fifoFinishMeal.pop()!!
+            rCore.planEvent(BeginTransportMealEvent(time, meal,  rCore.freeWaiters.poll()))
         } else if (rCore.fifoPayment.size() > 0) {
-            rCore.planEvent(BeginPayEvent(time, rCore.fifoPayment.pop()!!, rCore.freeWaiters.poll()))
+            val group = rCore.fifoPayment.pop()!!
+            rCore.planEvent(BeginPayEvent(time, group, rCore.freeWaiters.poll()))
         }
 
         rCore.planEvent(EndEatingEvent(rCore.cTime + finishEatingTime, customerGroup))

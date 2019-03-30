@@ -8,7 +8,7 @@ fun main(args: Array<String>) {
 }
 
 private fun testCore() {
-    val rCore = RestaurantSimulationCore(10, 15, 32400.0, 5000)
+    val rCore = RestaurantSimulationCore(10, 15, 32400.0, 1)
 
     rCore.start()
 }

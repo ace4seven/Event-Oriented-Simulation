@@ -1,6 +1,7 @@
 package app.events
 import app.model.CustomerGroup
 import app.model.CustomerGroupType
+import app.stats.WaitType
 import core.Event
 import core.EventSimulationCore
 import core.RestaurantSimulationCore
@@ -9,6 +10,9 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
 
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
+
+        customerGroup.averageWaiting.startTrack(rCore.cTime, WaitType.FORSERVICE)
+        rCore.stats.customerIn(customerGroup.type.count())
 
         var nextCome = 0.0
         when (customerGroup.type) {
@@ -22,23 +26,21 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
 
         rCore.customerGroupID += 1
         rCore.planEvent(ArrivalGroupEvent(nextCome + simulationCore.cTime, CustomerGroup(rCore.customerGroupID, customerGroup.type)))
-        C.message("Plán skupiny: ${customerGroup.type.desc()} v s.č: ${time}")
 
         val freeTable = rCore.tableManager.findedTable(customerGroup.type)
 
         if (freeTable == null) {
-            // TODO statistika
-            C.message("Odcháza z dôvodu plnej kapacity stolov: ${customerGroup.type.desc()}")
+            rCore.stats.leaveCustomer(customerGroup.type.count())
+            C.message("ODCHOD: ${customerGroup.type.desc()}")
         } else {
             customerGroup.addTable(freeTable)
-            C.message("Zaradeny stôl: ${freeTable.type.desc()}")
             if (rCore.freeWaiters.size > 0) {
                 val waiter = rCore.freeWaiters.poll()
+
                 rCore.planEvent(BeginOrderEvent(rCore.cTime, customerGroup, waiter))
-                C.message("Začiatok objednávky pre skupinu: ${customerGroup.type.desc()}")
             } else {
                 rCore.fifoService.add(customerGroup)
-                C.message("${customerGroup.type.desc()} zaradená do FIFO čakania na objednávku")
+                C.message("${customerGroup.type.desc()} FIFO: SERVICE: ${customerGroup.type.desc()}")
             }
         }
     }

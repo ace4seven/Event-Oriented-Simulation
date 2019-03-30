@@ -2,12 +2,12 @@ package core
 
 import app.events.ArrivalGroupEvent
 import app.model.*
+import app.stats.AverageWaitingType
 import app.stats.Statistics
 import core.generators.CEvenGenerator
 import core.generators.ExponencialGenerator
 import core.generators.TriangleGenerator
 import support.FoodManager
-import support.OrderSession
 import support.Queue
 import support.TableManager
 import java.util.*
@@ -54,7 +54,17 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     override fun afterSimulation(core: MCSimulationCore) {
         super.afterSimulation(core)
 
-        println(stats.repResult / stats.replication)
+        println("Priemerny cas cakania je: ${stats.getAverageTimeCustomerWait(AverageWaitingType.ALL) / 60}")
+        println("Priemerny cas cakania SERVIS: ${stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE) / 60}")
+        println("Priemerny cas cakania PAY: ${stats.getAverageTimeCustomerWait(AverageWaitingType.PAY) / 60}")
+        println("Priemerny cas cakania MEAL: ${stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL) / 60}")
+        println("LEAVE - : ${stats.getLeavedCustomersPercentage() * 100.0}")
+    }
+
+    override fun beforeReplication(core: MCSimulationCore) {
+        super.beforeReplication(core)
+
+        stats.incReplication()
     }
 
     override fun afterReplication(core: MCSimulationCore) {
@@ -63,8 +73,9 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
         initializePersonal()
         prepareForSimulation()
         emptyQueues()
+        tableManager.reset()
 
-        stats.incResult()
+        stats.updateWithReplication()
     }
 
     private fun initializePersonal() {

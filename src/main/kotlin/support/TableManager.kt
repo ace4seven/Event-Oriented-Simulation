@@ -38,7 +38,7 @@ class TableManager {
         for (i in 1..sixPersonTablesSum) { sixTablesQueue.add(RestaurantTable(i, TableType.SIX)) }
     }
 
-    fun clear() {
+    fun reset() {
         twoTablesQueue.clear()
         fourTablesQueue.clear()
         sixTablesQueue.clear()
