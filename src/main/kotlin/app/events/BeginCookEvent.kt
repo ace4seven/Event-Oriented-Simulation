@@ -11,11 +11,16 @@ class BeginCookEvent(override val time: Double, val meal: Order, val chef: Chef)
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        chef.startWorking(simulationCore.cTime)
+        chef.startWorking(time)
+        rCore.planEvent(EndCookEvent(time + meal.orderSession.duration, chef, meal))
+    }
 
-        rCore.planEvent(EndCookEvent(simulationCore.cTime + meal.orderSession.duration, chef, meal))
-
-        C.message("BEGIN COOKING: ${meal.orderSession.foodType.foodName()} pre ${meal.customerGroup.type.desc()}")
+    override fun debugPrint() {
+        C.message("BEGIN COOKING(chef: ${chef.getID()}) " +
+                "- Meal(name: ${meal.orderSession.foodType.foodName()}) " +
+                "for customer(id: ${meal.customerGroup.getID()}, " +
+                "table: ${meal.customerGroup.table().type.desc()})" +
+                " TIME: ${time}")
     }
 
 }

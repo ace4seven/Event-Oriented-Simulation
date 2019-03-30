@@ -20,6 +20,9 @@ abstract class EventSimulationCore(val maxTime: Double, replications: Long): MCS
     private fun simulate() {
         while (timeLine.size > 0 && cTime < maxTime && isRunning) {
             val cEvent = timeLine.poll()
+
+            if (C.DEBUG) { cEvent.debugPrint() }
+
             cTime = cEvent.time
             if (cTime >= maxTime) { break }
 

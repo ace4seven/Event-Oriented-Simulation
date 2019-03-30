@@ -6,13 +6,17 @@ private class RStatistics() {
     var averageWaitingForPay: Double = 0.0
 
     var leavePercentage: Double = 0.0
+
+    var averageWorkingTimesChefs = HashMap<Int, Double>()
+    var averageWorkingTimesWaiters = HashMap<Int, Double>()
+
 }
 
 enum class AverageWaitingType {
     SERVICE, MEAL, PAY, ALL
 }
 
-class Statistics {
+class Statistics(val rTime: Double) {
     private var rStatistics = RStatistics()
 
     private var cReplication: Int = 0
@@ -21,8 +25,21 @@ class Statistics {
     private var averageWaitingForMeal: Double = 0.0
     private var averageWaitingForPay: Double = 0.0
 
+    var averageWorkingTimesChefs = HashMap<Int, Double>()
+    var averageWorkingTimesWaiters = HashMap<Int, Double>()
+
     private var leavedCustomers: Int = 0
     private var customersSums: Int = 0
+
+    fun getAverageWorkingTimes() {
+        rStatistics.averageWorkingTimesWaiters.forEach {
+            println("Waiter: ${it.key} : ${ ((it.value / cReplication)) * 100 }")
+        }
+
+        rStatistics.averageWorkingTimesChefs.forEach {
+            println("Chef: ${it.key} : ${ ((it.value / cReplication)) * 100 }")
+        }
+    }
 
     fun getLeavedCustomersPercentage(): Double {
         return rStatistics.leavePercentage / cReplication
@@ -64,6 +81,20 @@ class Statistics {
         rStatistics.averageWaitingForMeal += (averageWaitingForMeal / (customersSums - leavedCustomers))
         rStatistics.averageWaitingForPay += (averageWaitingForPay / (customersSums - leavedCustomers))
 
+        averageWorkingTimesWaiters.forEach {
+            val prev = rStatistics.averageWorkingTimesWaiters[it.key]
+            if (prev != null) {
+                rStatistics.averageWorkingTimesWaiters[it.key] = prev + (rTime - it.value) / rTime
+            } else { rStatistics.averageWorkingTimesWaiters[it.key] = (rTime - it.value) / rTime }
+        }
+
+        averageWorkingTimesChefs.forEach {
+            val prev = rStatistics.averageWorkingTimesChefs[it.key]
+            if (prev != null) {
+                rStatistics.averageWorkingTimesChefs[it.key] = prev + (rTime - it.value) / rTime
+            } else { rStatistics.averageWorkingTimesChefs[it.key] = (rTime - it.value) / rTime }
+        }
+
         rStatistics.leavePercentage += leavedCustomers.toDouble() / customersSums.toDouble()
 
         averageWaitingForService = 0.0
@@ -71,6 +102,9 @@ class Statistics {
         averageWaitingForPay = 0.0
         leavedCustomers = 0
         customersSums = 0
+
+        averageWorkingTimesWaiters.clear()
+        averageWorkingTimesChefs.clear()
     }
 
 }

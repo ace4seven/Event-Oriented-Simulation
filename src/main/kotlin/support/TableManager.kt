@@ -32,6 +32,10 @@ class TableManager {
         prepareTables()
     }
 
+    fun getTablesStatus(): String {
+        return "Tables(TWO:${twoTablesQueue.size()}, FOUR:${fourTablesQueue.size()}, SIX:${sixTablesQueue.size()})"
+    }
+
     private fun prepareTables() {
         for (i in 1..twoPersonTablesSum) { twoTablesQueue.add(RestaurantTable(i, TableType.TWO)) }
         for (i in 1..fourPersonTablesSum) { fourTablesQueue.add(RestaurantTable(i, TableType.FOUR)) }

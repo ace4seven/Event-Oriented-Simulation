@@ -13,17 +13,13 @@ abstract class Worker(id: Int): Person(id) {
 
     fun stopWorking(time: Double) {
         stopWorkingTime = time
-        workingTime += stopWorkingTime - startWorkingTime
+        workingTime += (stopWorkingTime - startWorkingTime)
+
+        if (workingTime < 0) { throw Exception("Working time have to be positive number") }
     }
 
     fun getWorkingTime(): Double {
         return workingTime
-    }
-
-    fun resetTimes() {
-        workingTime = 0.0
-        startWorkingTime = 0.0
-        stopWorkingTime = 0.0
     }
 
 }

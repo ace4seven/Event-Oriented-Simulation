@@ -12,8 +12,9 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        waiter.stopWorking(rCore.cTime)
+        waiter.stopWorking(time)
         rCore.freeWaiters.add(waiter)
+        rCore.stats.averageWorkingTimesWaiters[waiter.getID()] = waiter.getWorkingTime()
 
         rCore.tableManager.freeTable(customerGroup.table())
 
@@ -27,8 +28,10 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
             val group = rCore.fifoPayment.pop()!!
             rCore.planEvent(BeginPayEvent(time, group, rCore.freeWaiters.poll()))
         }
+    }
 
-        C.message("Koniec platenia pre: ${customerGroup.type.desc()}")
+    override fun debugPrint() {
+        C.message("END PAY: Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) Waiter(id: ${waiter.getID()}) TIME: $time")
     }
 
 }

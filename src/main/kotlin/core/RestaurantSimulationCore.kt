@@ -18,7 +18,7 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
 
     var customerGroupID = 1
 
-    var stats = Statistics()
+    var stats = Statistics(time)
 
     // MARK: MANAGERS
     val tableManager = TableManager()
@@ -41,6 +41,7 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     val fourCustomerGenerator = ExponencialGenerator(1.0 / 720.0, seedGenerator.nextLong())
     val fiveCustomerGenerator = ExponencialGenerator(1.0 / 1200.0, seedGenerator.nextLong())
     val sixCustomerGenerator = ExponencialGenerator(1.0 / 900.0, seedGenerator.nextLong())
+
     val serviceGenerator = CEvenGenerator(45.0, 120.0, seedGenerator.nextLong())
     val eatFoodGenerator = TriangleGenerator(180.0, 1800.0, 900.0, seedGenerator.nextLong())
     val payGenerator = CEvenGenerator(43.0, 97.0, seedGenerator.nextLong())
@@ -54,11 +55,12 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     override fun afterSimulation(core: MCSimulationCore) {
         super.afterSimulation(core)
 
-        println("Priemerny cas cakania je: ${stats.getAverageTimeCustomerWait(AverageWaitingType.ALL) / 60}")
-        println("Priemerny cas cakania SERVIS: ${stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE) / 60}")
-        println("Priemerny cas cakania PAY: ${stats.getAverageTimeCustomerWait(AverageWaitingType.PAY) / 60}")
-        println("Priemerny cas cakania MEAL: ${stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL) / 60}")
+        println("Priemerny cas cakania je: ${stats.getAverageTimeCustomerWait(AverageWaitingType.ALL)}")
+        println("Priemerny cas cakania SERVIS: ${stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE)}")
+        println("Priemerny cas cakania PAY: ${stats.getAverageTimeCustomerWait(AverageWaitingType.PAY)}")
+        println("Priemerny cas cakania MEAL: ${stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL)}")
         println("LEAVE - : ${stats.getLeavedCustomersPercentage() * 100.0}")
+        stats.getAverageWorkingTimes()
     }
 
     override fun beforeReplication(core: MCSimulationCore) {
@@ -76,6 +78,8 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
         tableManager.reset()
 
         stats.updateWithReplication()
+
+        customerGroupID = 1
     }
 
     private fun initializePersonal() {
@@ -90,26 +94,26 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
         fifoService.clear()
         fifoFinishMeal.clear()
         fifoOrder.clear()
-        fifoService.clear()
+        fifoPayment.clear()
     }
 
     private fun prepareForSimulation() {
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.ONE)))
+        planEvent(ArrivalGroupEvent(cTime + oneCustomerGenerator.nextDouble(), CustomerGroup(customerGroupID, CustomerGroupType.ONE)))
 
         customerGroupID += 1
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.TWO)))
+        planEvent(ArrivalGroupEvent(cTime + twoCustomerGenerator.nextDouble(), CustomerGroup(customerGroupID, CustomerGroupType.TWO)))
 
         customerGroupID += 1
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.THREE)))
+        planEvent(ArrivalGroupEvent(cTime + threeCustomerGenerator.nextDouble(), CustomerGroup(customerGroupID, CustomerGroupType.THREE)))
 
         customerGroupID += 1
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.FOUR)))
+        planEvent(ArrivalGroupEvent(cTime + fourCustomerGenerator.nextDouble(), CustomerGroup(customerGroupID, CustomerGroupType.FOUR)))
 
         customerGroupID += 1
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.FIVE)))
+        planEvent(ArrivalGroupEvent(cTime + fiveCustomerGenerator.nextDouble(), CustomerGroup(customerGroupID, CustomerGroupType.FIVE)))
 
         customerGroupID += 1
-        planEvent(ArrivalGroupEvent(cTime, CustomerGroup(customerGroupID, CustomerGroupType.SIX)))
+        planEvent(ArrivalGroupEvent(cTime + sixCustomerGenerator.nextDouble(), CustomerGroup(customerGroupID, CustomerGroupType.SIX)))
     }
 
 }

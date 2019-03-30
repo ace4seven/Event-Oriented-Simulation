@@ -12,8 +12,9 @@ class EndCookEvent(override val time: Double, val chef: Chef, val order: Order):
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        chef.stopWorking(rCore.cTime)
+        chef.stopWorking(time)
         rCore.freeChefs.add(chef)
+        rCore.stats.averageWorkingTimesChefs[chef.getID()] = chef.getWorkingTime()
 
         order.customerGroup.incMeals()
 
@@ -21,15 +22,21 @@ class EndCookEvent(override val time: Double, val chef: Chef, val order: Order):
             rCore.fifoFinishMeal.add(order.customerGroup)
             if (rCore.freeWaiters.size > 0) {
                 val group = rCore.fifoFinishMeal.pop()!!
-                rCore.planEvent(BeginTransportMealEvent(rCore.cTime, group, rCore.freeWaiters.poll()))
+                rCore.planEvent(BeginTransportMealEvent(time, group, rCore.freeWaiters.poll()))
             }
         }
 
         if (rCore.fifoOrder.size() > 0) {
-            rCore.planEvent(BeginCookEvent(rCore.cTime, rCore.fifoOrder.pop()!!, rCore.freeChefs.poll()))
+            rCore.planEvent(BeginCookEvent(time, rCore.fifoOrder.pop()!!, rCore.freeChefs.poll()))
         }
+    }
 
-        C.message("FINISH COOKING: ${order.orderSession.foodType.foodName()} pre ${order.customerGroup.type.desc()}")
+    override fun debugPrint() {
+        C.message("END COOKING(chef: ${chef.getID()}) " +
+                "- Meal(name: ${order.orderSession.foodType.foodName()}) " +
+                "for customer(id: ${order.customerGroup.getID()}, " +
+                "table: ${order.customerGroup.table().type.desc()})" +
+                " TIME: ${time}")
     }
 
 }

@@ -10,12 +10,13 @@ class AverageWaitingStat {
 
     private var serviceWaitingTime = WaitingEntry(WaitType.FORSERVICE)
     private var mealWaitingTime = WaitingEntry(WaitType.FORMEAL)
-    private var payWaitingTime = WaitingEntry(WaitType.FORPAY)
+    var payWaitingTime = WaitingEntry(WaitType.FORPAY)
 
-    private var canStart = true
+    var canStopTrack = false
+        private set
 
     fun startTrack(cTime: Double, type: WaitType) {
-        if (!canStart) {
+        if (canStopTrack) {
             throw Exception("Cannot start multiple times")
         }
 
@@ -25,21 +26,37 @@ class AverageWaitingStat {
             WaitType.FORPAY -> payWaitingTime.start = cTime
         }
 
-        canStart = false
+        canStopTrack = true
     }
 
     fun stopTrack(cTime: Double, type: WaitType) {
-        if (canStart) {
+        if (!canStopTrack) {
             throw Exception("Cannot start multiple times")
         }
 
         when(type) {
-            WaitType.FORSERVICE -> serviceWaitingTime.result = (cTime - serviceWaitingTime.start)
-            WaitType.FORMEAL -> mealWaitingTime.result = (cTime - mealWaitingTime.start)
-            WaitType.FORPAY -> payWaitingTime.result = (cTime - payWaitingTime.start)
+            WaitType.FORSERVICE -> {
+                val result = cTime - serviceWaitingTime.start
+                if (result < 0) throw Exception("STATISTIC TIME ERROR COUNTING")
+                serviceWaitingTime.result = result
+            }
+            WaitType.FORMEAL -> {
+                val result = cTime - mealWaitingTime.start
+                if (result < 0) throw Exception("STATISTIC TIME ERROR COUNTING")
+                mealWaitingTime.result = result
+            }
+            WaitType.FORPAY -> {
+                val result = cTime - payWaitingTime.start
+                if (result < 0) {
+                    println(cTime)
+                    println(payWaitingTime.start)
+                    throw Exception("STATISTIC TIME ERROR COUNTING")
+                }
+                payWaitingTime.result = (cTime - payWaitingTime.start)
+            }
         }
 
-        canStart = true
+        canStopTrack = false
     }
 
     fun getResult(type: WaitType): WaitingEntry {

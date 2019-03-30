@@ -12,14 +12,18 @@ class BeginPayEvent(override val time: Double, val customerGroup: CustomerGroup,
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        customerGroup.averageWaiting.stopTrack(rCore.cTime, WaitType.FORPAY)
-        rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORPAY), customerGroup.type.count())
+        if (customerGroup.averageWaiting.canStopTrack) {
+            customerGroup.averageWaiting.stopTrack(time, WaitType.FORPAY)
+            rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORPAY), customerGroup.type.count())
+        }
 
-        waiter.startWorking(rCore.cTime)
+        waiter.startWorking(time)
 
-        rCore.planEvent(EndPayEvent(rCore.cTime + rCore.payGenerator.nextDouble(), waiter, customerGroup))
+        rCore.planEvent(EndPayEvent(time + rCore.payGenerator.nextDouble(), waiter, customerGroup))
+    }
 
-        C.message("BEGIN PAY: ${customerGroup.type.desc()}")
+    override fun debugPrint() {
+        C.message("BEGIN PAY: Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) Waiter(id: ${waiter.getID()}) TIME: $time")
     }
 
 }

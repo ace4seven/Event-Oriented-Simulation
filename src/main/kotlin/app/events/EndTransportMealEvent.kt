@@ -12,17 +12,20 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        customerGroup.averageWaiting.stopTrack(rCore.cTime, WaitType.FORMEAL)
-        rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORMEAL), customerGroup.type.count())
+        if (customerGroup.averageWaiting.canStopTrack) {
+            customerGroup.averageWaiting.stopTrack(time, WaitType.FORMEAL)
+            rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORMEAL), customerGroup.type.count())
+        }
 
-        waiter.stopWorking(rCore.cTime)
+        waiter.stopWorking(time)
         rCore.freeWaiters.add(waiter)
+        rCore.stats.averageWorkingTimesWaiters[waiter.getID()] = waiter.getWorkingTime()
 
         var finishEatingTime = 0.0
         for (i in 1..customerGroup.type.count()) {
             val customerEatingTime = rCore.eatFoodGenerator.nextDouble()
             if (finishEatingTime < customerEatingTime) {
-                finishEatingTime += customerEatingTime
+                finishEatingTime = customerEatingTime
             }
         }
 
@@ -37,9 +40,11 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
             rCore.planEvent(BeginPayEvent(time, group, rCore.freeWaiters.poll()))
         }
 
-        rCore.planEvent(EndEatingEvent(rCore.cTime + finishEatingTime, customerGroup))
+        rCore.planEvent(EndEatingEvent(time + finishEatingTime, customerGroup))
+    }
 
-        C.message("Koniec odnesenia jedla pre: ${customerGroup.type.desc()}")
+    override fun debugPrint() {
+        C.message("BEGIN TRANSPORT MEAL Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) Waiter(id: ${waiter.getID()}) TIME: $time")
     }
 
 }

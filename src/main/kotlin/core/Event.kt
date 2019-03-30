@@ -12,4 +12,6 @@ abstract class Event: Comparable<Event> {
         return 1
     }
 
+    open fun debugPrint() {}
+
 }

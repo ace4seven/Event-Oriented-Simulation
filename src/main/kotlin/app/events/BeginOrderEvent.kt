@@ -12,14 +12,17 @@ class BeginOrderEvent(override val time: Double, val customerGroup: CustomerGrou
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        customerGroup.averageWaiting.stopTrack(rCore.cTime, WaitType.FORSERVICE)
-        rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORSERVICE), customerGroup.type.count())
+        if (customerGroup.averageWaiting.canStopTrack) {
+            customerGroup.averageWaiting.stopTrack(time, WaitType.FORSERVICE)
+            rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORSERVICE), customerGroup.type.count())
+        }
 
-        waiter.startWorking(rCore.cTime)
+        waiter.startWorking(time)
+        rCore.planEvent(EndOrderEvent(time + rCore.serviceGenerator.nextDouble(), customerGroup, waiter))
+    }
 
-        rCore.planEvent(EndOrderEvent(rCore.cTime + rCore.serviceGenerator.nextDouble(), customerGroup, waiter))
-
-        C.message("BEGIN ORDER: ${customerGroup.type.desc()}")
+    override fun debugPrint() {
+        C.message("BEGIN ORDER Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) Waiter(id: ${waiter.getID()}) TIME: $time")
     }
 
 }

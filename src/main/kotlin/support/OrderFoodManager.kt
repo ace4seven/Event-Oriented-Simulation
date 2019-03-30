@@ -22,7 +22,7 @@ enum class FoodType {
 
 data class OrderSession(val foodType: FoodType, val duration: Int)
 
-class FoodManager(val seedGenerator: Random) {
+class FoodManager(seedGenerator: Random) {
 
     val cesarSalattimeGenerator: DEvenGenerator = DEvenGenerator(380, 441, seedGenerator.nextLong())
     val penesarSalattimeGenerator: DEmpiricGenerator
@@ -33,7 +33,7 @@ class FoodManager(val seedGenerator: Random) {
     init {
         val peneDataset =  LinkedList<DEmppiricDataType>()
         peneDataset.add(DEmppiricDataType(0.5,
-                DiscreteGenerator(331, 630
+                DiscreteGenerator(331, 631
                         , seedGenerator.nextLong())))
 
         peneDataset.add(DEmppiricDataType(0.35,

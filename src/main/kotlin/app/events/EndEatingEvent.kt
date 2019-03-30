@@ -11,15 +11,16 @@ class EndEatingEvent(override val time: Double, val customerGroup: CustomerGroup
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        customerGroup.averageWaiting.startTrack(rCore.cTime, WaitType.FORPAY)
-
         if (rCore.freeWaiters.size > 0) {
-            rCore.planEvent(BeginPayEvent(rCore.cTime, customerGroup, rCore.freeWaiters.poll()))
+            rCore.planEvent(BeginPayEvent(time, customerGroup, rCore.freeWaiters.poll()))
         } else {
+            customerGroup.averageWaiting.startTrack(time, WaitType.FORPAY)
             rCore.fifoPayment.add(customerGroup)
         }
+    }
 
-        C.message("END EAT: ${customerGroup.type.desc()}")
+    override fun debugPrint() {
+        C.message("END EAT: Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()})")
     }
 
 }

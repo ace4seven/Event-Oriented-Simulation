@@ -11,7 +11,6 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        customerGroup.averageWaiting.startTrack(rCore.cTime, WaitType.FORSERVICE)
         rCore.stats.customerIn(customerGroup.type.count())
 
         var nextCome = 0.0
@@ -25,24 +24,29 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
         }
 
         rCore.customerGroupID += 1
-        rCore.planEvent(ArrivalGroupEvent(nextCome + simulationCore.cTime, CustomerGroup(rCore.customerGroupID, customerGroup.type)))
+        rCore.planEvent(ArrivalGroupEvent(nextCome + time, CustomerGroup(rCore.customerGroupID, customerGroup.type)))
 
         val freeTable = rCore.tableManager.findedTable(customerGroup.type)
 
         if (freeTable == null) {
             rCore.stats.leaveCustomer(customerGroup.type.count())
-            C.message("ODCHOD: ${customerGroup.type.desc()}")
+
+            C.message("     !!!NO FREE TABLE Customer(id:${customerGroup.getID()}, count: ${customerGroup.type.count()}) ${rCore.tableManager.getTablesStatus()}")
         } else {
             customerGroup.addTable(freeTable)
             if (rCore.freeWaiters.size > 0) {
                 val waiter = rCore.freeWaiters.poll()
-
-                rCore.planEvent(BeginOrderEvent(rCore.cTime, customerGroup, waiter))
+                C.message("     !!!TABLE STATUS ${rCore.tableManager.getTablesStatus()}")
+                rCore.planEvent(BeginOrderEvent(time, customerGroup, waiter))
             } else {
+                customerGroup.averageWaiting.startTrack(time, WaitType.FORSERVICE)
                 rCore.fifoService.add(customerGroup)
-                C.message("${customerGroup.type.desc()} FIFO: SERVICE: ${customerGroup.type.desc()}")
             }
         }
+    }
+
+    override fun debugPrint() {
+        C.message("ARRIVAL Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) TIME: ${time}")
     }
 
 }

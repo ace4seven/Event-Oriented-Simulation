@@ -1,7 +1,7 @@
 class C {
 
     companion object {
-        val DEBUG = true
+        val DEBUG = false
 
         fun message(text: String) {
             if (DEBUG) {
