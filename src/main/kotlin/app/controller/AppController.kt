@@ -1,5 +1,6 @@
 package app.controller
 
+import app.model.CalendarData
 import app.model.StatEntry
 import core.EventSimulationCore
 import core.EventSimulationCoreObserver
@@ -46,7 +47,9 @@ class AppController: Controller(), EventSimulationCoreObserver {
     val numberOfDaysProperty = SimpleIntegerProperty()
     val numberOfDays: Int by numberOfDaysProperty
 
+    // TABLES
     var mainStatsDataSource= FXCollections.observableArrayList<StatEntry>()
+    var calendarStatesDataSource= FXCollections.observableArrayList<CalendarData>()
 
     private var restaurantCore = RestaurantSimulationCore(0, 0, 0.0, 0)
 
@@ -56,6 +59,7 @@ class AppController: Controller(), EventSimulationCoreObserver {
 
     fun startSimulationAction() {
         if (restaurantCore.isPaused) {
+            restaurantCore.isFast = isFastMode
             restaurantCore.resume()
         } else {
             setupCore()
@@ -88,6 +92,10 @@ class AppController: Controller(), EventSimulationCoreObserver {
     }
 
     override fun refresh(core: EventSimulationCore) {
+        if (!core.isFast) {
+            refreshStates(restaurantCore.stateStats)
+        }
+
         simulationTime = C.timeFormatter(restaurantCore.cTime)
         mainStatsDataSource.clear()
         mainStatsDataSource.removeAll()
@@ -110,6 +118,12 @@ class AppController: Controller(), EventSimulationCoreObserver {
         averageWaitingServiceChartData.add(XYChart.Data(restaurantCore.currentReplication, averageWaitingTimeService))
         averageWaitingMealChartData.add(XYChart.Data(restaurantCore.currentReplication, averageWaitingTimeMeal))
         averageWaitingPayChartData.add(XYChart.Data(restaurantCore.currentReplication, averageWaitingTimePay))
+    }
+
+    private fun refreshStates(states: StateStatistic) {
+        calendarStatesDataSource.clear()
+        val calendarEntries = states.calendarData.toMutableList()
+        for (i in 1..calendarEntries.count()) { calendarStatesDataSource.add(calendarEntries[i-1]) }
     }
 
 }

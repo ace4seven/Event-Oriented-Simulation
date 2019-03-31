@@ -9,4 +9,8 @@ class SystemEvent(override val time: Double): Event() {
         C.message("System event load")
     }
 
+    override fun calendarDescription(): String {
+        return "SYSTEM EVENT"
+    }
+
 }

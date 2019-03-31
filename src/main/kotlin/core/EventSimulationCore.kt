@@ -10,7 +10,9 @@ interface EventSimulationCoreObserver {
 
 abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCSimulationCore(replications) {
 
-    private var timeLine: PriorityQueue<Event> = PriorityQueue()
+    var timeLine: PriorityQueue<Event> = PriorityQueue()
+        private set
+
     private var skipTime: Double = 1.0
 
     var isCooling = false
@@ -27,8 +29,10 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
         while (timeLine.size > 0 && cTime < maxTime) {
 
             while (!isRunning) {
-                Thread.sleep(1000)
+                Thread.sleep(100)
             }
+
+            afterEvent(this)
 
             val cEvent = timeLine.poll()
 
@@ -109,5 +113,7 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
 
         return currentReplication.toLong() % factor == 0.toLong()
     }
+
+    open fun afterEvent(core: EventSimulationCore) {}
 
 }

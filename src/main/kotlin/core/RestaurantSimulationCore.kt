@@ -2,10 +2,7 @@ package core
 
 import app.events.ArrivalGroupEvent
 import app.model.*
-import app.stats.AverageWaitingType
-import app.stats.GlobalStatistics
-import app.stats.HeightType
-import app.stats.Statistics
+import app.stats.*
 import core.generators.CEvenGenerator
 import core.generators.ExponencialGenerator
 import core.generators.TriangleGenerator
@@ -50,6 +47,7 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
     val durationFoodToCustomerGenerator = CEvenGenerator(23.0, 80.0, seedGenerator.nextLong())
 
     val globalStatistics = GlobalStatistics()
+    var stateStats = StateStatistic()
 
     var isPaused = false
         private set
@@ -148,6 +146,10 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
 
         customerGroupID += 1
         planEvent(ArrivalGroupEvent(cTime + sixCustomerGenerator.nextDouble(), CustomerGroup(customerGroupID, CustomerGroupType.SIX)))
+    }
+
+    override fun afterEvent(core: EventSimulationCore) {
+        stateStats.updateStates(this)
     }
 
 }

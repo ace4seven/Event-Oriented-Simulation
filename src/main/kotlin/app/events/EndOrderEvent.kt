@@ -52,4 +52,8 @@ class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup,
         C.message("END ORDER Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) Waiter(id: ${waiter.getID()}) TIME: $time")
     }
 
+    override fun calendarDescription(): String {
+        return "Koniec objednavky pre skupinu ${customerGroup.getID()}, obsluha: ${waiter.getID()}"
+    }
+
 }

@@ -1,5 +1,6 @@
 package app.view
 
+import app.model.CalendarData
 import app.model.StatEntry
 import javafx.scene.chart.NumberAxis
 import javafx.scene.control.TabPane
@@ -291,7 +292,26 @@ open class SimulationSubView : AppView("Simulácia") {
                             }
                         }
                         tab("Priebeh stavov") {
+                            vbox {
+                                hbox {
+                                    tableview<CalendarData> {
+                                        hboxConstraints {
+                                            marginTop = 20.0
+                                        }
 
+                                        items =controller.calendarStatesDataSource
+                                        minWidth = 450.0
+
+                                        selectionModel.isCellSelectionEnabled = true
+                                        column("Sim. čas", CalendarData::time) {
+                                            minWidth = 90.0
+                                        }
+                                        column("Hodnota štatistiky", CalendarData::desc) {
+                                            minWidth = 360.0
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

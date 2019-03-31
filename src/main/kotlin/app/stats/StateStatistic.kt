@@ -1,11 +1,14 @@
 package app.stats
 
 import app.model.*
+import core.RestaurantSimulationCore
+import core.SystemEvent
 
 
 class StateStatistic {
 
-    private var calendarData = mutableListOf<CalendarData>()
+    var calendarData = mutableListOf<CalendarData>()
+        private set
     private var chefsData = mutableListOf<WorkerData>()
     private var waitersData = mutableListOf<WorkerData>()
 
@@ -18,5 +21,16 @@ class StateStatistic {
 
     private var tablesData = mutableListOf<TableData>()
     private var mealFrontData = mutableListOf<MealFrontData>()
+
+    fun updateStates(core: RestaurantSimulationCore) {
+        calendarData.clear()
+        val c = core.timeLine.toList().filter {
+            val event = it as? SystemEvent
+            event == null
+        }
+        c.forEach {
+            calendarData.add(CalendarData.make(it.time, it.calendarDescription()))
+        }
+    }
 
 }

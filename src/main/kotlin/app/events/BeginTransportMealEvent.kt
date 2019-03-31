@@ -21,4 +21,8 @@ class BeginTransportMealEvent(override val time: Double, val meal: CustomerGroup
         C.message("BEGIN TRANSPORT MEAL Customer(id: ${meal.getID()}, count: ${meal.type.count()}) Waiter(id: ${waiter.getID()}) TIME: $time")
     }
 
+    override fun calendarDescription(): String {
+        return "Začiatok odnesenia jedla pre ${meal.getID()}, obsluha: ${waiter.getID()}"
+    }
+
 }

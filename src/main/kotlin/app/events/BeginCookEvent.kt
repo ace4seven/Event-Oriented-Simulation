@@ -23,4 +23,8 @@ class BeginCookEvent(override val time: Double, val meal: Order, val chef: Chef)
                 " TIME: ${time}")
     }
 
+    override fun calendarDescription(): String {
+        return "Začiatok varenia: ${meal.orderSession.foodType.foodName()}, Kuchár: ${chef.getID()} pre skupinu: ${meal.customerGroup.getID()}"
+    }
+
 }

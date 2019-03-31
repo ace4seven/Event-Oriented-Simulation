@@ -50,4 +50,8 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
         C.message("END PAY: Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) Waiter(id: ${waiter.getID()}) TIME: $time")
     }
 
+    override fun calendarDescription(): String {
+        return "Koniec platenia, skupina ${customerGroup.getID()}, obsluha: ${waiter.getID()}"
+    }
+
 }

@@ -25,4 +25,8 @@ class BeginOrderEvent(override val time: Double, val customerGroup: CustomerGrou
         C.message("BEGIN ORDER Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) Waiter(id: ${waiter.getID()}) TIME: $time")
     }
 
+    override fun calendarDescription(): String {
+        return "Začiatok objednávky pre skupinu: ${customerGroup.getID()} čašníkom ${waiter.getID()}"
+    }
+
 }

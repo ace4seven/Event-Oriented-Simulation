@@ -23,4 +23,8 @@ class EndEatingEvent(override val time: Double, val customerGroup: CustomerGroup
         C.message("END EAT: Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()})")
     }
 
+    override fun calendarDescription(): String {
+        return "Koniec jedenia, skupina: ${customerGroup.getID()}"
+    }
+
 }

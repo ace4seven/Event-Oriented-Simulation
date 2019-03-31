@@ -41,4 +41,8 @@ class EndCookEvent(override val time: Double, val chef: Chef, val order: Order):
                 " TIME: ${time}")
     }
 
+    override fun calendarDescription(): String {
+        return "Koniec varenia: jedlo - ${order.orderSession.foodType.foodName()}, kuchar: ${chef.getID()}, skupina: ${order.customerGroup.getID()}"
+    }
+
 }

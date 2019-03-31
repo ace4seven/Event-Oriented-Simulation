@@ -64,4 +64,8 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
         C.message("ARRIVAL Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) TIME: ${time}")
     }
 
+    override fun calendarDescription(): String {
+        return "Príchod skupiny: (id: ${customerGroup.getID()}, počet: ${customerGroup.type.count()})"
+    }
+
 }

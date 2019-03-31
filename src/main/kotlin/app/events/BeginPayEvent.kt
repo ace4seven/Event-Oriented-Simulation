@@ -26,4 +26,8 @@ class BeginPayEvent(override val time: Double, val customerGroup: CustomerGroup,
         C.message("BEGIN PAY: Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) Waiter(id: ${waiter.getID()}) TIME: $time")
     }
 
+    override fun calendarDescription(): String {
+        return "Začiatok platenia: ${customerGroup.getID()}, obsluha: ${waiter.getID()}"
+    }
+
 }
