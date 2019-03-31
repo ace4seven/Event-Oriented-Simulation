@@ -24,9 +24,14 @@ class TableManager {
     private val fourPersonTablesSum = 7
     private val sixPersonTablesSum = 6
 
-    private var twoTablesQueue = Queue<RestaurantTable>()
-    private var fourTablesQueue = Queue<RestaurantTable>()
-    private var sixTablesQueue = Queue<RestaurantTable>()
+    var twoTablesQueue = Queue<RestaurantTable>()
+        private set
+
+    var fourTablesQueue = Queue<RestaurantTable>()
+        private set
+
+    var sixTablesQueue = Queue<RestaurantTable>()
+        private set
 
     init {
         prepareTables()

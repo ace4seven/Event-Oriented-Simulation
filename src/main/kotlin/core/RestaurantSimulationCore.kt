@@ -3,6 +3,8 @@ package core
 import app.events.ArrivalGroupEvent
 import app.model.*
 import app.stats.AverageWaitingType
+import app.stats.GlobalStatistics
+import app.stats.HeightType
 import app.stats.Statistics
 import core.generators.CEvenGenerator
 import core.generators.ExponencialGenerator
@@ -12,13 +14,13 @@ import support.Queue
 import support.TableManager
 import java.util.*
 
-class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int, time: Double, replications: Long): EventSimulationCore(time, replications) {
+class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int, time: Double, replications: Long): EventSimulationCore(time, replications) {
 
     private val seedGenerator = Random()
 
     var customerGroupID = 1
 
-    var stats = Statistics(time)
+    val stats = Statistics()
 
     // MARK: MANAGERS
     val tableManager = TableManager()
@@ -47,7 +49,25 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     val payGenerator = CEvenGenerator(43.0, 97.0, seedGenerator.nextLong())
     val durationFoodToCustomerGenerator = CEvenGenerator(23.0, 80.0, seedGenerator.nextLong())
 
-    init {
+    val globalStatistics = GlobalStatistics()
+
+    var isPaused = false
+        private set
+
+    open fun resume() {
+        isRunning = !isRunning
+        isPaused =  !isPaused
+    }
+
+    open fun pause() {
+        isRunning = !isRunning
+        isPaused =  !isPaused
+    }
+
+    override fun beforeSimulation(core: MCSimulationCore) {
+        super.beforeSimulation(core)
+
+        stats.simulationTimeDuration = maxTime
         initializePersonal()
         prepareForSimulation()
     }
@@ -55,13 +75,13 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     override fun afterSimulation(core: MCSimulationCore) {
         super.afterSimulation(core)
 
-//        println("Priemerny cas cakania je: ${stats.getAverageTimeCustomerWait(AverageWaitingType.ALL)}")
-        println("LAVY IS: ${stats.getAverageTimeCustomerWait().first}")
-        println("Priemerny cas cakania SERVIS: ${stats.getAverageTimeCustomerWait().second}")
-        println("PRAVY IS: ${stats.getAverageTimeCustomerWait().third}")
-//        println("Priemerny cas cakania PAY: ${stats.getAverageTimeCustomerWait(AverageWaitingType.PAY)}")
-//        println("Priemerny cas cakania MEAL: ${stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL)}")
-        println("LEAVE - : ${stats.getLeavedCustomersPercentage() * 100.0}")
+        println(stats.getHeight(HeightType.WAITER).second)
+        println(stats.getHeight(HeightType.CHEF).second)
+        println("STOLY")
+        println(stats.getHeight(HeightType.TABLE_TWO).second)
+        println(stats.getHeight(HeightType.TABLE_FOUR).second)
+        println(stats.getHeight(HeightType.TABLE_SIX).second)
+
         stats.getAverageWorkingTimes()
     }
 
@@ -73,6 +93,7 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
 
     override fun afterReplication(core: MCSimulationCore) {
         super.afterReplication(core)
+        globalStatistics.update(stats)
 
         initializePersonal()
         prepareForSimulation()
@@ -82,6 +103,17 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
         stats.updateWithReplication()
 
         customerGroupID = 1
+    }
+
+    override fun clear() {
+        super.clear()
+
+        stats.reset()
+
+        customerGroupID = 1
+        initializePersonal()
+        emptyQueues()
+        tableManager.reset()
     }
 
     private fun initializePersonal() {

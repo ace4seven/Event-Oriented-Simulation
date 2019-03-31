@@ -4,7 +4,6 @@ interface MCSimulationCoreDelegate {
     fun beforeSimulation(core: MCSimulationCore) {}
     fun beforeReplication(core: MCSimulationCore) {}
     fun start()
-    fun pause()
     fun clear()
     fun replication(core: MCSimulationCore)
     fun afterReplication(core: MCSimulationCore) {}
@@ -14,42 +13,36 @@ interface MCSimulationCoreDelegate {
 open class MCSimulationCore(var replication: Long): MCSimulationCoreDelegate {
     var currentReplication: Int = 0
         private set
-
-    private var simulationInProgress: Boolean = false
     private val chartPoints: Int = 4000
 
-    protected var jumpDrawOnChart: Int = 0
     protected var jumpIndex: Int = 0
 
+    private var isStoped = false
+
     override fun start() {
-        jumpDrawOnChart = (replication / chartPoints).toInt()
-        simulationInProgress = true
+        isStoped = false
         val self = this
         val thread = object: Thread() {
             override fun run() {
                 beforeSimulation(self)
-                while(currentReplication < replication && simulationInProgress ) {
+                while(currentReplication < replication && !isStoped) {
                     currentReplication += 1
                     beforeReplication(self)
                     replication(self)
                     afterReplication(self)
                 }
-                afterSimulation(self)
+                if (!isStoped) {
+                    afterSimulation(self)
+                }
             }
         }
         thread.start()
     }
 
-    override fun pause() {
-        simulationInProgress = false
-        start()
-    }
-
     override fun clear() {
-        jumpDrawOnChart = 0
+        isStoped = true
         jumpIndex = 0
         currentReplication = 0
-        simulationInProgress = false
     }
 
     override fun replication(core: MCSimulationCore) {}

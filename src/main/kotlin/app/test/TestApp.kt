@@ -8,8 +8,8 @@ fun main(args: Array<String>) {
 }
 
 private fun testCore() {
-    val rCore = RestaurantSimulationCore(4, 15, 32400.0, 10000)
-
+    val rCore = RestaurantSimulationCore(4, 16, 32400.0, 1000)
+    rCore.isFast = true
     rCore.start()
 }
 
