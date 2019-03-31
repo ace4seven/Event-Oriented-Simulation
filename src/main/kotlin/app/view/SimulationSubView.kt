@@ -4,6 +4,8 @@ import app.model.StatEntry
 import javafx.scene.chart.NumberAxis
 import javafx.scene.control.TabPane
 import javafx.scene.control.CheckBox
+import javafx.scene.paint.Color
+import javafx.scene.text.FontWeight
 import tornadofx.*
 import tornadofx.Stylesheet.Companion.colorRectPane
 import tornadofx.Stylesheet.Companion.headerPanel
@@ -160,9 +162,23 @@ open class SimulationSubView : AppView("Simulácia") {
 
                             valueProperty().addListener { observable, oldValue, newValue ->
                                 if (oldValue.toInt() != newValue.toInt()) {
-                                    controller.speed = newValue.toInt()
+                                    controller.changeSkipSpeed(newValue.toDouble())
                                 }
                             }
+                        }
+
+                        label("11 : 00 : 00") {
+                            style {
+                                fontWeight = FontWeight.BOLD
+                                fontSize = 30.px
+                            }
+                            vboxConstraints {
+                                marginTop = 50.0
+                                marginBottom = 10.0
+                                marginLeft = 30.0
+                            }
+
+                            bind(controller.simulationTimeProperty)
                         }
                     }
 
@@ -272,11 +288,10 @@ open class SimulationSubView : AppView("Simulácia") {
                                         minWidth = 550.0
                                     }
                                 }
-//                                label("Výsledky: ")
-//                                label {
-//                                    bind(controller.averageWaitingTimeProperty, true)
-//                                }
                             }
+                        }
+                        tab("Priebeh stavov") {
+
                         }
                     }
                 }

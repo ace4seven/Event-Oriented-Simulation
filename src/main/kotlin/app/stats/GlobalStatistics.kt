@@ -77,7 +77,7 @@ class GlobalStatistics {
     private fun formatStatistic(data: Triple<Double?, Double, Double?>): String {
         return "${data.second} " +
                 " - IS: <${if (data.first != null) data.first!! else "NO_DATA"}, " +
-                "${if (data.second != null) data.second!! else "NO_DATA"}>"
+                "${if (data.second != null) data.third!! else "NO_DATA"}>"
     }
 
     private fun formatStatistic(data: ConfidenceInterval): String {

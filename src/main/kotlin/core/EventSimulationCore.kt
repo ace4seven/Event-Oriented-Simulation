@@ -11,7 +11,7 @@ interface EventSimulationCoreObserver {
 abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCSimulationCore(replications) {
 
     private var timeLine: PriorityQueue<Event> = PriorityQueue()
-    private var skipTime: Double = 100.0
+    private var skipTime: Double = 1.0
 
     var isCooling = false
     var isFast = false
@@ -39,7 +39,9 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
 
             cEvent.execute(this)
 
-            if (!isFast) { updateGUI() }
+            if (!isFast) {
+                updateGUI()
+            }
         }
     }
 
