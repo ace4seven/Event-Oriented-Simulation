@@ -27,26 +27,26 @@ class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup,
         rCore.freeWaiters.add(waiter)
         rCore.stats.averageFreeTimeWaiter[waiter.getID()] = waiter.getWorkingTime()
         if (canTrackWeights) {
-            rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+            rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
         }
 
         if (rCore.fifoService.size() > 0) {
             val group = rCore.fifoService.pop()!!
             rCore.planEvent(BeginOrderEvent(time, group, rCore.freeWaiters.poll()))
             if (canTrackWeights) {
-                rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+                rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
             }
         } else if (rCore.fifoFinishMeal.size() > 0) {
             val meal = rCore.fifoFinishMeal.pop()!!
             rCore.planEvent(BeginTransportMealEvent(time, meal,  rCore.freeWaiters.poll()))
             if (canTrackWeights) {
-                rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+                rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
             }
         } else if (rCore.fifoPayment.size() > 0) {
             val group = rCore.fifoPayment.pop()!!
             rCore.planEvent(BeginPayEvent(time, group, rCore.freeWaiters.poll()))
             if (canTrackWeights) {
-                rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+                rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
             }
         }
 
@@ -58,7 +58,7 @@ class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup,
             }
 
             if (canTrackWeights) {
-                rCore.stats.freeChefssWeight.updateChange(time, rCore.freeChefs.size)
+                rCore.stats.freeChefssWeight.addValue(time, rCore.freeChefs.size)
             }
         }
     }

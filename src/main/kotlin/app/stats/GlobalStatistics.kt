@@ -23,16 +23,16 @@ class GlobalStatistics {
                         formatStatisticWithTime(stats.getAverageBusinessTime())),
                 makeStatEntry(
                         "Priemerný čas čakania",
-                        formatStatistic(stats.getAverageTimeCustomerWait())),
-                makeStatEntry(
-                        "Priemerný čas čakania - obsluha",
-                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE))),
-                makeStatEntry(
-                        "Priemerný čas čakania - jedlo",
-                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL))),
-                makeStatEntry (
-                        "Priemerný čas čakania - platba",
-                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.PAY))),
+                        formatStatisticWaitingTime(stats.getAverageWaitingTime())),
+//                makeStatEntry(
+//                        "Priemerný čas čakania - obsluha",
+//                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE))),
+//                makeStatEntry(
+//                        "Priemerný čas čakania - jedlo",
+//                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL))),
+//                makeStatEntry (
+//                        "Priemerný čas čakania - platba",
+//                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.PAY))),
                 makeStatEntry(
                         "Priemerný počet príchodov za deň",
                         "${customersArrival.first}"),
@@ -83,6 +83,12 @@ class GlobalStatistics {
                 "${if (data.third != null) data.third!! else "NO_DATA"}>"
     }
 
+    private fun formatStatisticWaitingTime(data: ConfidenceInterval): String {
+        return "${data.median()} " +
+                " - IS: <${if (data.ISLeft() != null) data.ISLeft()!! else "NO_DATA"}, " +
+                "${if (data.ISRight() != null) data.ISRight()!! else "NO_DATA"}>"
+    }
+
     private fun formatStatistic(data: ConfidenceInterval): String {
         return "${data.median() * 100} %" +
                 " - IS: <${if (data.ISLeft() != null) data.ISLeft()!! * 100 else "NO_DATA"}, " +
@@ -90,9 +96,9 @@ class GlobalStatistics {
     }
 
     private fun formatStatisticWithTime(data: ConfidenceInterval): String {
-        return "${C.timeFormatter(data.median())} " +
-                " - IS: <${if (data.ISLeft() != null) C.timeFormatter(data.ISLeft()!!) else "NO_DATA"}, " +
-                "${if (data.ISRight() != null) C.timeFormatter(data.ISRight()!!) else "NO_DATA"}>"
+        return "${C.timeFormatterInc(data.median())} " +
+                " - IS: <${if (data.ISLeft() != null) C.timeFormatterInc(data.ISLeft()!!) else "NO_DATA"}, " +
+                "${if (data.ISRight() != null) C.timeFormatterInc(data.ISRight()!!) else "NO_DATA"}>"
     }
 
 }

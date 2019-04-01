@@ -13,10 +13,13 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
         val rCore = simulationCore as RestaurantSimulationCore
         val canTrackWeights = !simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime
 
+        rCore.stats.waitingTime += customerGroup.averageWaiting.getResult() * customerGroup.type.count().toDouble()
+        rCore.stats.customersFinishEating += customerGroup.type.count()
+
         waiter.stopWorking(time)
         rCore.freeWaiters.add(waiter)
         if (canTrackWeights) {
-            rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+            rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
         }
         rCore.stats.averageFreeTimeWaiter[waiter.getID()] = waiter.getWorkingTime()
 
@@ -26,17 +29,17 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
         when (customerGroup.table().type) {
             TableType.TWO -> {
                 if (canTrackWeights) {
-                    rCore.stats.freeTableTwoWeight.updateChange(time, rCore.tableManager.twoTablesQueue.size())
+                    rCore.stats.freeTableTwoWeight.addValue(time, rCore.tableManager.twoTablesQueue.size())
                 }
             }
             TableType.FOUR -> {
                 if (canTrackWeights) {
-                    rCore.stats.freeTableFourWeight.updateChange(time, rCore.tableManager.fourTablesQueue.size())
+                    rCore.stats.freeTableFourWeight.addValue(time, rCore.tableManager.fourTablesQueue.size())
                 }
             }
             TableType.SIX -> {
                 if (canTrackWeights) {
-                    rCore.stats.freeTableSixWeight.updateChange(time, rCore.tableManager.sixTablesQueue.size())
+                    rCore.stats.freeTableSixWeight.addValue(time, rCore.tableManager.sixTablesQueue.size())
                 }
             }
         }
@@ -45,19 +48,19 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
             val group = rCore.fifoService.pop()!!
             rCore.planEvent(BeginOrderEvent(time, group, rCore.freeWaiters.poll()))
             if (canTrackWeights) {
-                rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+                rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
             }
         } else if (rCore.fifoFinishMeal.size() > 0) {
             val meal = rCore.fifoFinishMeal.pop()!!
             rCore.planEvent(BeginTransportMealEvent(time, meal,  rCore.freeWaiters.poll()))
             if (canTrackWeights) {
-                rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+                rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
             }
         } else if (rCore.fifoPayment.size() > 0) {
             val group = rCore.fifoPayment.pop()!!
             rCore.planEvent(BeginPayEvent(time, group, rCore.freeWaiters.poll()))
             if (canTrackWeights) {
-                rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+                rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
             }
         }
     }

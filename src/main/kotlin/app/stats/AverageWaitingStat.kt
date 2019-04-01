@@ -10,7 +10,7 @@ class AverageWaitingStat {
 
     private var serviceWaitingTime = WaitingEntry(WaitType.FORSERVICE)
     private var mealWaitingTime = WaitingEntry(WaitType.FORMEAL)
-    var payWaitingTime = WaitingEntry(WaitType.FORPAY)
+    private var payWaitingTime = WaitingEntry(WaitType.FORPAY)
 
     var canStopTrack = false
         private set
@@ -61,6 +61,10 @@ class AverageWaitingStat {
             WaitType.FORMEAL -> return mealWaitingTime
             WaitType.FORPAY -> return payWaitingTime
         }
+    }
+
+    fun getResult(): Double {
+        return (serviceWaitingTime.result + mealWaitingTime.result + payWaitingTime.result)
     }
 
 }

@@ -6,6 +6,7 @@ private class RStatistics {
     var averageWaitingForService = ConfidenceInterval()
     var averageWaitingForMeal = ConfidenceInterval()
     var averageWaitingForPay = ConfidenceInterval()
+    var averageWaitingTime = ConfidenceInterval()
 
     var averageBussinesTime = ConfidenceInterval()
 
@@ -39,6 +40,10 @@ class Statistics() {
     var averageWaitingForService: Double = 0.0
     var averageWaitingForMeal: Double = 0.0
     var averageWaitingForPay: Double = 0.0
+
+    var waitingTime = 0.0
+    var customersFinishEating = 0
+
     var averageFreeTimeChef = HashMap<Int, Double>()
     var averageFreeTimeWaiter = HashMap<Int, Double>()
     var freeWaitersWeight = WeightAveragesStat()
@@ -125,6 +130,10 @@ class Statistics() {
         }
     }
 
+    fun getAverageWaitingTime(): ConfidenceInterval {
+        return rStatistics.averageWaitingTime
+    }
+
     fun getAverageHeight(type: HeightType): Triple<Double?, Double, Double?> {
         var isLeft: Double? = null
         var isRight: Double? = null
@@ -208,14 +217,16 @@ class Statistics() {
         rStatistics.averageWaitingForMeal.addMedianPart((averageWaitingForMeal / (customersSums - leavedCustomers).toDouble()))
         rStatistics.averageWaitingForPay.addMedianPart((averageWaitingForPay / (customersSums - leavedCustomers).toDouble()))
 
-        rStatistics.freeChefssWeight.addMedianPart(freeChefssWeight.getWeight())
-        rStatistics.freeWaitersWeight.addMedianPart(freeWaitersWeight.getWeight())
-        rStatistics.freeTableTwoWeight.addMedianPart(freeTableTwoWeight.getWeight())
-        rStatistics.freeTableFourWeight.addMedianPart(freeTableFourWeight.getWeight())
-        rStatistics.freeTableSixWeight.addMedianPart(freeTableSixWeight.getWeight())
+        rStatistics.freeChefssWeight.addMedianPart(freeChefssWeight.getResult())
+        rStatistics.freeWaitersWeight.addMedianPart(freeWaitersWeight.getResult())
+        rStatistics.freeTableTwoWeight.addMedianPart(freeTableTwoWeight.getResult())
+        rStatistics.freeTableFourWeight.addMedianPart(freeTableFourWeight.getResult())
+        rStatistics.freeTableSixWeight.addMedianPart(freeTableSixWeight.getResult())
 
         rStatistics.leavedCustomers += leavedCustomers
         rStatistics.customersSums += customersSums
+
+        rStatistics.averageWaitingTime.addMedianPart(waitingTime / customersFinishEating.toDouble())
 
         averageFreeTimeWaiter.forEach {
             val prev = rStatistics.averageFreeTimeWaiter[it.key]
@@ -243,6 +254,8 @@ class Statistics() {
         averageWaitingForPay = 0.0
         leavedCustomers = 0
         customersSums = 0
+        customersFinishEating = 0
+        waitingTime = 0.0
 
         averageFreeTimeWaiter.clear()
         averageFreeTimeChef.clear()

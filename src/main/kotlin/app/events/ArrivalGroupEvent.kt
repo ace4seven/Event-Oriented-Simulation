@@ -39,13 +39,13 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
             if (!simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime) {
                 when (freeTable.type) {
                     TableType.TWO -> {
-                        rCore.stats.freeTableTwoWeight.updateChange(time, rCore.tableManager.twoTablesQueue.size())
+                        rCore.stats.freeTableTwoWeight.addValue(time, rCore.tableManager.twoTablesQueue.size())
                     }
                     TableType.FOUR -> {
-                        rCore.stats.freeTableFourWeight.updateChange(time, rCore.tableManager.fourTablesQueue.size())
+                        rCore.stats.freeTableFourWeight.addValue(time, rCore.tableManager.fourTablesQueue.size())
                     }
                     TableType.SIX -> {
-                        rCore.stats.freeTableSixWeight.updateChange(time, rCore.tableManager.sixTablesQueue.size())
+                        rCore.stats.freeTableSixWeight.addValue(time, rCore.tableManager.sixTablesQueue.size())
                     }
                 }
             }
@@ -56,7 +56,7 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
                 val waiter = rCore.freeWaiters.poll()
 
                 if (!simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime) {
-                    rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+                    rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
                 }
 
                 C.message("     !!!TABLE STATUS ${rCore.tableManager.getTablesStatus()}")

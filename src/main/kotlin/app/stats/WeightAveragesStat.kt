@@ -6,7 +6,7 @@ class WeightAveragesStat {
     private var numerator: Double = 0.0
     private var denominator: Double = 0.0
 
-    fun updateChange(atTime: Double, size: Int) {
+    fun addValue(atTime: Double, size: Int) {
         val weight = atTime - lastTime
 
         denominator += weight
@@ -15,7 +15,7 @@ class WeightAveragesStat {
         lastTime = atTime
     }
 
-    fun getWeight(): Double {
+    fun getResult(): Double {
         return numerator / denominator
     }
 

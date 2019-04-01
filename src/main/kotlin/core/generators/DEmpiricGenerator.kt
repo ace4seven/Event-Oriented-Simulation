@@ -13,7 +13,7 @@ class DEmpiricGenerator(val dataSet: LinkedList<DEmppiricDataType>, val pGenerat
 
     override fun nextInt(): Int {
         val pRand = pGenerator.nextDouble()
-        var pTemp: Double = 0.0
+        var pTemp = 0.0
 
         dataSet.forEach {
             pTemp += it.probability

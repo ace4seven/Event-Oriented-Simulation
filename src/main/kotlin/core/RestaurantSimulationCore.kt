@@ -79,6 +79,8 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
 
     override fun afterSimulation(core: MCSimulationCore) {
         super.afterSimulation(core)
+
+        println("End of simulation")
     }
 
     override fun beforeReplication(core: MCSimulationCore) {
