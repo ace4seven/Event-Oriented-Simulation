@@ -29,11 +29,6 @@ class AppController: Controller(), EventSimulationCoreObserver {
     val collingModeProperty = SimpleBooleanProperty()
     var isCooling: Boolean by collingModeProperty
 
-    var averageWaitingChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
-    var averageWaitingServiceChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
-    var averageWaitingMealChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
-    var averageWaitingPayChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
-
     val numberOfReplicationsProperty = SimpleIntegerProperty()
     val numberOfReplications: Int by numberOfReplicationsProperty
 
@@ -58,6 +53,11 @@ class AppController: Controller(), EventSimulationCoreObserver {
     var waitingServiceDatasource = FXCollections.observableArrayList<WaitingData>()
     var waitingPayDataSource = FXCollections.observableArrayList<WaitingData>()
     var waitingForMealDataSource = FXCollections.observableArrayList<WaitingData>()
+
+    var averageWaitingChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
+    var averageWaitingServiceChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
+    var averageWaitingMealChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
+    var averageWaitingPayChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
 
     var orderedMealsDataSource = FXCollections.observableArrayList<MealFrontData>()
 

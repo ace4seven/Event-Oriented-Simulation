@@ -5,12 +5,15 @@ import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
 import javafx.scene.control.Button
+import javafx.scene.control.Label
 import javafx.scene.control.TextField
 import tornadofx.*
 
 abstract class AppView(title: String) : View(title) {
 
     protected val controller: AppController by inject()
+
+    protected var currentTime:Label by singleAssign()
 
     // TEXTFIELDS
     protected var replicationTextField: TextField by singleAssign()
@@ -37,5 +40,61 @@ abstract class AppView(title: String) : View(title) {
     protected var startButton: Button by singleAssign()
     protected var pauseButton: Button by singleAssign()
     protected var stopButton: Button by singleAssign()
+    protected var stateButton: Button by singleAssign()
+
+    protected fun initial() {
+        startButton.isDisable = false
+        pauseButton.isDisable = true
+        stopButton.isDisable = true
+        stateButton.isDisable = true
+    }
+
+    protected fun start() {
+        startButton.isDisable = true
+        pauseButton.isDisable = false
+        stopButton.isDisable = true
+
+        stateButton.isDisable = replicationTextField.text.toInt() > 1
+
+    }
+
+    protected fun stop() {
+        startButton.isDisable = false
+        pauseButton.isDisable = true
+        stopButton.isDisable = true
+        stateButton.isDisable = true
+
+        controller.mainStatsDataSource.clear()
+
+        controller.averageWaitingPayChartData.clear()
+        controller.averageWaitingMealChartData.clear()
+        controller.averageWaitingServiceChartData.clear()
+        controller.averageWaitingChartData.clear()
+
+        controller.calendarStatesDataSource
+        controller.waitersDataSource
+
+        controller.mainStatsDataSource
+        controller.calendarStatesDataSource.clear()
+        controller.waitersDataSource.clear()
+        controller.chefsDataSource.clear()
+        controller.tableDataSource.clear()
+        controller.freeWaiterDatasource.clear()
+        controller.freeChefDataSource.clear()
+
+        controller.waitingServiceDatasource.clear()
+        controller.waitingPayDataSource.clear()
+        controller.waitingForMealDataSource.clear()
+
+        controller.orderedMealsDataSource.clear()
+
+        currentTime.text = "11 : 00 : 00"
+    }
+
+    protected fun pause() {
+        startButton.isDisable = false
+        pauseButton.isDisable = true
+        stopButton.isDisable = false
+    }
 
 }

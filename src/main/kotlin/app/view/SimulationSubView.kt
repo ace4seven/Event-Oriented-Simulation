@@ -109,6 +109,7 @@ open class SimulationSubView : AppView("Simulácia") {
                                 marginTop = 50.0
                             }
                             action {
+                                start()
                                 controller.startSimulationAction()
                             }
                         }
@@ -119,6 +120,7 @@ open class SimulationSubView : AppView("Simulácia") {
                                 marginTop = 10.0
                             }
                             action {
+                                pause()
                                 controller.pauseSimulationAction()
                             }
                         }
@@ -129,6 +131,8 @@ open class SimulationSubView : AppView("Simulácia") {
                                 marginTop = 10.0
                             }
                             action {
+                                stop()
+
                                 controller.stopSimulationAction()
                                 averageWaitingChart.data.clear()
                                 averageWaitingChartData.data.clear()
@@ -148,7 +152,7 @@ open class SimulationSubView : AppView("Simulácia") {
                             }
                         }
 
-                        button("Stav objektov") {
+                        stateButton = button("Stav objektov") {
                             minWidth = 150.0
                             vboxConstraints {
                                 marginTop = 10.0
@@ -179,7 +183,7 @@ open class SimulationSubView : AppView("Simulácia") {
                             }
                         }
 
-                        label("11 : 00 : 00") {
+                        currentTime = label("11 : 00 : 00") {
                             style {
                                 fontWeight = FontWeight.BOLD
                                 fontSize = 30.px
@@ -197,6 +201,8 @@ open class SimulationSubView : AppView("Simulácia") {
                     tabpane {
                         hboxConstraints { marginLeft = 20.0 }
                         maxWidth = 1000.0
+
+                        tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
 
                         tab("Grafy priemerné čakanie vo frontoch") {
                             vbox {
@@ -302,12 +308,12 @@ open class SimulationSubView : AppView("Simulácia") {
                                 }
                             }
                         }
-                        tab("Priebeh stavov") {
-                        }
                     }
                 }
             }
         }
+
+        initial()
     }
 
     private fun checkBoxLogic(isNormal: Boolean? = null) {

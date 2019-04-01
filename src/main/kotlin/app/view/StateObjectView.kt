@@ -81,15 +81,19 @@ class StateObjectView : AppView("Stav objektov") {
                             minWidth = 200.0
 
                             selectionModel.isCellSelectionEnabled = true
+
                             column("ID", TableData::id) {
                                 maxWidth = 30.0
                             }
+
                             column("Kapacita", TableData::capacity) {
                                 minWidth = 50.0
                             }
+
                             column("Stav", TableData::status) {
                                 minWidth = 220.0
                             }
+
                         }
                     }
 

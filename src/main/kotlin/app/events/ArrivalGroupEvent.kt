@@ -24,8 +24,10 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
             CustomerGroupType.SIX -> nextCome = rCore.sixCustomerGenerator.nextDouble()
         }
 
-        rCore.customerGroupID += 1
-        rCore.planEvent(ArrivalGroupEvent(nextCome + time, CustomerGroup(rCore.customerGroupID, customerGroup.type)))
+        if (!rCore.isCooling || rCore.cTime < rCore.maxTime) {
+            rCore.customerGroupID += 1
+            rCore.planEvent(ArrivalGroupEvent(nextCome + time, CustomerGroup(rCore.customerGroupID, customerGroup.type)))
+        }
 
         val freeTable = rCore.tableManager.findedTable(customerGroup.type)
 
