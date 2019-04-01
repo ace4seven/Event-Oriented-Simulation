@@ -11,6 +11,7 @@ import javafx.collections.FXCollections
 import javafx.scene.chart.XYChart
 import tornadofx.*
 import app.stats.*
+import javafx.beans.property.SimpleDoubleProperty
 import java.lang.IndexOutOfBoundsException
 
 class AppController: Controller(), EventSimulationCoreObserver {
@@ -29,6 +30,9 @@ class AppController: Controller(), EventSimulationCoreObserver {
     val collingModeProperty = SimpleBooleanProperty()
     var isCooling: Boolean by collingModeProperty
 
+    val turboModeProperty = SimpleBooleanProperty()
+    var isTurbo: Boolean by turboModeProperty
+
     val numberOfReplicationsProperty = SimpleIntegerProperty()
     val numberOfReplications: Int by numberOfReplicationsProperty
 
@@ -43,6 +47,8 @@ class AppController: Controller(), EventSimulationCoreObserver {
 
     // TABLES
     var mainStatsDataSource= FXCollections.observableArrayList<StatEntry>()
+    var repDataSource= FXCollections.observableArrayList<StatEntry>()
+
     var calendarStatesDataSource= FXCollections.observableArrayList<CalendarData>()
     var waitersDataSource= FXCollections.observableArrayList<WorkerData>()
     var chefsDataSource= FXCollections.observableArrayList<WorkerData>()
@@ -60,6 +66,10 @@ class AppController: Controller(), EventSimulationCoreObserver {
     var averageWaitingPayChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
 
     var orderedMealsDataSource = FXCollections.observableArrayList<MealFrontData>()
+
+    var progressProperty = SimpleDoubleProperty()
+    var progress: Double by progressProperty
+
 
     private var restaurantCore = RestaurantSimulationCore(0, 0, 0.0, 0)
 
@@ -98,6 +108,7 @@ class AppController: Controller(), EventSimulationCoreObserver {
         restaurantCore.replication = numberOfReplications.toLong()
         restaurantCore.isFast = isFastMode
         restaurantCore.isCooling = isCooling
+        restaurantCore.isTurboMode = isTurbo
         restaurantCore.maxTime = (if(numberOfDays == 0) 1 else(numberOfDays) * 32400).toDouble()
     }
 
@@ -143,6 +154,16 @@ class AppController: Controller(), EventSimulationCoreObserver {
         waitingPayDataSource.clear()
 
         orderedMealsDataSource.clear()
+        repDataSource.clear()
+
+        val entries = restaurantCore.localStatistics.getEntries().toMutableList()
+        for (i in 1..entries.count()) {
+            try {
+                repDataSource.add(entries[i-1])
+            } catch(e: IndexOutOfBoundsException) {
+                print("Index problem")
+            }
+        }
 
         val calendarEntries = states.calendarData.toMutableList()
         for (i in 1..calendarEntries.count()) { calendarStatesDataSource.add(calendarEntries[i-1]) }
@@ -173,6 +194,10 @@ class AppController: Controller(), EventSimulationCoreObserver {
 
         val meailsFrontEntries = states.mealFrontData.toMutableList()
         for (i in 1..meailsFrontEntries.count()) { orderedMealsDataSource.add(meailsFrontEntries[i-1]) }
+    }
+
+    override fun progress(percentage: Double) {
+        this.progress = percentage
     }
 
 }

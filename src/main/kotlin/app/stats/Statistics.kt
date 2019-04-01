@@ -34,36 +34,51 @@ enum class HeightType {
 class Statistics() {
     private var rStatistics = RStatistics()
     private var cReplication: Int = 0
-    private var averageWaitingForService: Double = 0.0
-    private var averageWaitingForMeal: Double = 0.0
-    private var averageWaitingForPay: Double = 0.0
-
     private var businessTime: Double = 0.0
 
+    var averageWaitingForService: Double = 0.0
+    var averageWaitingForMeal: Double = 0.0
+    var averageWaitingForPay: Double = 0.0
     var averageFreeTimeChef = HashMap<Int, Double>()
     var averageFreeTimeWaiter = HashMap<Int, Double>()
-
     var freeWaitersWeight = WeightAveragesStat()
     var freeChefssWeight = WeightAveragesStat()
     var freeTableTwoWeight = WeightAveragesStat()
     var freeTableSixWeight = WeightAveragesStat()
     var freeTableFourWeight = WeightAveragesStat()
-
-    private var leavedCustomers: Int = 0
-    private var customersSums: Int = 0
-
     var simulationTimeDuration = 0.0
+    var leavedCustomers: Int = 0
+    var customersSums: Int = 0
 
     fun getCurrentReplication(): Int {
         return cReplication
     }
 
+    // MARK: - Replication statistics
+
+    fun getWorkingTimes(): Pair<HashMap<Int, Double>, HashMap<Int, Double>> {
+        return Pair(averageFreeTimeWaiter, averageFreeTimeChef)
+    }
+
+    fun getTimeCustomersWait(type: AverageWaitingType? = null): Double {
+        if (type == null) {
+            return (averageWaitingForMeal + averageWaitingForPay + averageWaitingForService) / if (customersSums - leavedCustomers == 0) 0 else customersSums - leavedCustomers
+        }
+        when(type) {
+            AverageWaitingType.SERVICE -> return averageWaitingForService / if (customersSums - leavedCustomers == 0) 0 else customersSums - leavedCustomers
+            AverageWaitingType.MEAL -> return averageWaitingForMeal / if (customersSums - leavedCustomers == 0) 0 else customersSums - leavedCustomers
+            AverageWaitingType.PAY -> return averageWaitingForPay / if (customersSums - leavedCustomers == 0) 0 else customersSums - leavedCustomers
+        }
+    }
+
+
+    // MARK: - SIMULATION STATISTICS
 
     fun getAverageWorkingTimes(): Triple<HashMap<Int, Double>, HashMap<Int, Double>, Int> {
         return Triple(rStatistics.averageFreeTimeWaiter, rStatistics.averageFeeTimeChef, cReplication)
     }
 
-    fun getArrivalStats(): Triple<Int, Int, ConfidenceInterval> {
+    fun getAverageArrivalStats(): Triple<Int, Int, ConfidenceInterval> {
         return Triple(rStatistics.customersSums / cReplication,
                 rStatistics.leavedCustomers / cReplication,
                 rStatistics.leavePercentage)
@@ -108,6 +123,60 @@ class Statistics() {
                         rStatistics.averageWaitingForPay.ISRight())
             }
         }
+    }
+
+    fun getAverageHeight(type: HeightType): Triple<Double?, Double, Double?> {
+        var isLeft: Double? = null
+        var isRight: Double? = null
+
+        when (type) {
+            HeightType.WAITER -> {
+                if (cReplication > 30) {
+                    isLeft = rStatistics.freeWaitersWeight.ISLeft()!!
+                    isRight = rStatistics.freeWaitersWeight.ISRight()!!
+                }
+                val median = rStatistics.freeWaitersWeight.median()
+
+                return Triple(isLeft, median, isRight)
+            }
+            HeightType.CHEF -> {
+                if (cReplication > 30) {
+                    isLeft = rStatistics.freeChefssWeight.ISLeft()!!
+                    isRight = rStatistics.freeChefssWeight.ISRight()!!
+                }
+                val median = rStatistics.freeChefssWeight.median()
+
+                return Triple(isLeft, median, isRight)
+            }
+            HeightType.TABLE_TWO -> {
+                if (cReplication > 30) {
+                    isLeft = rStatistics.freeTableTwoWeight.ISLeft()!!
+                    isRight = rStatistics.freeTableTwoWeight.ISRight()!!
+                }
+                val median = rStatistics.freeTableTwoWeight.median()
+
+                return Triple(isLeft, median, isRight)
+            }
+            HeightType.TABLE_FOUR -> {
+                if (cReplication > 30) {
+                    isLeft = rStatistics.freeTableFourWeight.ISLeft()!!
+                    isRight = rStatistics.freeTableFourWeight.ISRight()!!
+                }
+                val median = rStatistics.freeTableFourWeight.median()
+
+                return Triple(isLeft, median, isRight)
+            }
+            HeightType.TABLE_SIX -> {
+                if (cReplication > 30) {
+                    isLeft = rStatistics.freeTableSixWeight.ISLeft()!!
+                    isRight = rStatistics.freeTableSixWeight.ISRight()!!
+                }
+                val median = rStatistics.freeTableSixWeight.median()
+
+                return Triple(isLeft, median, isRight)
+            }
+        }
+
     }
 
     fun updateBusinessTime(time: Double) {
@@ -188,60 +257,6 @@ class Statistics() {
     fun reset() {
         rStatistics = RStatistics()
         clearNumbs()
-    }
-
-    fun getHeight(type: HeightType): Triple<Double?, Double, Double?> {
-        var isLeft: Double? = null
-        var isRight: Double? = null
-
-        when (type) {
-            HeightType.WAITER -> {
-                if (cReplication > 30) {
-                    isLeft = rStatistics.freeWaitersWeight.ISLeft()!!
-                    isRight = rStatistics.freeWaitersWeight.ISRight()!!
-                }
-                val median = rStatistics.freeWaitersWeight.median()
-
-                return Triple(isLeft, median, isRight)
-            }
-            HeightType.CHEF -> {
-                if (cReplication > 30) {
-                    isLeft = rStatistics.freeChefssWeight.ISLeft()!!
-                    isRight = rStatistics.freeChefssWeight.ISRight()!!
-                }
-                val median = rStatistics.freeChefssWeight.median()
-
-                return Triple(isLeft, median, isRight)
-            }
-            HeightType.TABLE_TWO -> {
-                if (cReplication > 30) {
-                    isLeft = rStatistics.freeTableTwoWeight.ISLeft()!!
-                    isRight = rStatistics.freeTableTwoWeight.ISRight()!!
-                }
-                val median = rStatistics.freeTableTwoWeight.median()
-
-                return Triple(isLeft, median, isRight)
-            }
-            HeightType.TABLE_FOUR -> {
-                if (cReplication > 30) {
-                    isLeft = rStatistics.freeTableFourWeight.ISLeft()!!
-                    isRight = rStatistics.freeTableFourWeight.ISRight()!!
-                }
-                val median = rStatistics.freeTableFourWeight.median()
-
-                return Triple(isLeft, median, isRight)
-            }
-            HeightType.TABLE_SIX -> {
-                if (cReplication > 30) {
-                    isLeft = rStatistics.freeTableSixWeight.ISLeft()!!
-                    isRight = rStatistics.freeTableSixWeight.ISRight()!!
-                }
-                val median = rStatistics.freeTableSixWeight.median()
-
-                return Triple(isLeft, median, isRight)
-            }
-        }
-
     }
 
 }

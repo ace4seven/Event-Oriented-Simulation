@@ -7,7 +7,7 @@ class SystemEvent(override val time: Double): Event() {
             simulationCore.planEvent(SystemEvent(simulationCore.cTime + 10))
         }
 
-        if (!simulationCore.isFast) { Thread.sleep(simulationCore.getSkipTime().toLong()) }
+        if (!simulationCore.isFast && !simulationCore.isTurboMode) { Thread.sleep(simulationCore.getSkipTime().toLong()) }
         C.message("System event load")
     }
 

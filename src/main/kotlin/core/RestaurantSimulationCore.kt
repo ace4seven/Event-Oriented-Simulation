@@ -48,6 +48,7 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
     val durationFoodToCustomerGenerator = CEvenGenerator(23.0, 80.0, seedGenerator.nextLong())
 
     val globalStatistics = GlobalStatistics()
+    val localStatistics = LocalStatistics()
 
     var stateStats = StateStatistic()
 
@@ -91,6 +92,7 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
 
         if (isCooling) {
             stats.updateBusinessTime(cTime)
+            stats.simulationTimeDuration = cTime
         } else {
             stats.updateBusinessTime(maxTime)
         }
@@ -166,6 +168,7 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
 
     override fun afterEvent(core: EventSimulationCore) {
         stateStats.updateStates(this)
+        localStatistics.update(stats, cTime)
     }
 
 }

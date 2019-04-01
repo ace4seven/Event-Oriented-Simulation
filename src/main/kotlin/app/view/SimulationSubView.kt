@@ -18,6 +18,7 @@ open class SimulationSubView : AppView("Simulácia") {
     var normalCheckBox = CheckBox()
     var fastCheckBox = CheckBox()
     var coolCheckBox = CheckBox()
+    var turboCheckBox = CheckBox()
 
     override val root = vbox {
         prefWidth = 1500.0
@@ -94,6 +95,14 @@ open class SimulationSubView : AppView("Simulácia") {
                             }
 
                             coolCheckBox = checkbox("Chladenie", controller.collingModeProperty) {
+                                hboxConstraints {
+                                    marginLeft = 10.0
+                                }
+                                action {
+                                    checkBoxLogic()
+                                }
+                            }
+                            turboCheckBox = checkbox("Turbo", controller.turboModeProperty) {
                                 hboxConstraints {
                                     marginLeft = 10.0
                                 }
@@ -196,6 +205,18 @@ open class SimulationSubView : AppView("Simulácia") {
 
                             bind(controller.simulationTimeProperty)
                         }
+
+                        label("Dokončené ...") {
+                            vboxConstraints {
+                                marginTop = 50.0
+                                marginBottom = 10.0
+                            }
+                        }
+
+                        simulationProgressBar = progressbar {
+                            minWidth = 200.0
+                            bind(controller.progressProperty)
+                        }
                     }
 
                     tabpane {
@@ -284,6 +305,25 @@ open class SimulationSubView : AppView("Simulácia") {
                                             isForceZeroInRange = false
                                             isAutoRanging = true
                                         }
+                                    }
+                                }
+                            }
+                        }
+                        tab("Výsledky replikácie") {
+                            hbox {
+                                tableview<StatEntry> {
+                                    hboxConstraints {
+                                        marginTop = 20.0
+                                    }
+
+                                    items =controller.repDataSource
+                                    minWidth = 900.0
+
+                                    column("Názov štatistiky", StatEntry::id) {
+                                        minWidth = 350.0
+                                    }
+                                    column("Hodnota štatistiky", StatEntry::value) {
+                                        minWidth = 550.0
                                     }
                                 }
                             }

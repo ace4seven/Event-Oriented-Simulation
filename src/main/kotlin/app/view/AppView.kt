@@ -6,6 +6,7 @@ import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
 import javafx.scene.control.Button
 import javafx.scene.control.Label
+import javafx.scene.control.ProgressBar
 import javafx.scene.control.TextField
 import tornadofx.*
 
@@ -42,6 +43,8 @@ abstract class AppView(title: String) : View(title) {
     protected var stopButton: Button by singleAssign()
     protected var stateButton: Button by singleAssign()
 
+    protected var simulationProgressBar: ProgressBar by singleAssign()
+
     protected fun initial() {
         startButton.isDisable = false
         pauseButton.isDisable = true
@@ -64,7 +67,10 @@ abstract class AppView(title: String) : View(title) {
         stopButton.isDisable = true
         stateButton.isDisable = true
 
+        controller.progress = 0.0
+
         controller.mainStatsDataSource.clear()
+        controller.repDataSource.clear()
 
         controller.averageWaitingPayChartData.clear()
         controller.averageWaitingMealChartData.clear()

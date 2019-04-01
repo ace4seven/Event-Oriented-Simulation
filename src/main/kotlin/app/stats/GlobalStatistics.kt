@@ -13,7 +13,7 @@ class GlobalStatistics {
     fun update(stats: Statistics) {
         entries.clear()
 
-        val customersArrival = stats.getArrivalStats()
+        val customersArrival = stats.getAverageArrivalStats()
         entries.addAll(listOf(
                 makeStatEntry(
                         "Aktuálna replikácia",
@@ -44,19 +44,19 @@ class GlobalStatistics {
                         formatStatistic(customersArrival.third)),
                 makeStatEntry(
                         "Priemerný počet voľných čašníkov",
-                        formatStatistic(stats.getHeight(HeightType.WAITER))),
+                        formatStatistic(stats.getAverageHeight(HeightType.WAITER))),
                 makeStatEntry(
                         "Priemerný počet voľných kuchárov",
-                        formatStatistic(stats.getHeight(HeightType.CHEF))),
+                        formatStatistic(stats.getAverageHeight(HeightType.CHEF))),
                 makeStatEntry(
                         "Priemerný počet voľných stolov(2)",
-                        formatStatistic(stats.getHeight(HeightType.TABLE_TWO))),
+                        formatStatistic(stats.getAverageHeight(HeightType.TABLE_TWO))),
                 makeStatEntry(
                         "Priemerný počet voľných stolov(4)",
-                        formatStatistic(stats.getHeight(HeightType.TABLE_FOUR))),
+                        formatStatistic(stats.getAverageHeight(HeightType.TABLE_FOUR))),
                 makeStatEntry(
                         "Priemerný počet voľných stolov(6)",
-                        formatStatistic(stats.getHeight(HeightType.TABLE_SIX)))
+                        formatStatistic(stats.getAverageHeight(HeightType.TABLE_SIX)))
         ))
 
         val cRep = stats.getAverageWorkingTimes().third
