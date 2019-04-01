@@ -12,11 +12,14 @@ class EndCookEvent(override val time: Double, val chef: Chef, val order: Order):
         val rCore = simulationCore as RestaurantSimulationCore
 
         chef.stopWorking(time)
+
         rCore.freeChefs.add(chef)
         rCore.stats.averageFreeTimeChef[chef.getID()] = chef.getWorkingTime()
         rCore.stats.freeChefssWeight.updateChange(time, rCore.freeChefs.size)
 
         order.customerGroup.incMeals()
+
+        order.customerGroup.table().setStatus("Skupina ${order.customerGroup.getID()} jedlá (${order.customerGroup.getFinishedMeals()}/${order.customerGroup.type.count()})")
 
         if (order.customerGroup.isReadyForDeploy()) {
             rCore.fifoFinishMeal.add(order.customerGroup)

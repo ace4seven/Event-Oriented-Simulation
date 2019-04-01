@@ -12,6 +12,9 @@ import kotlin.math.min
 class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup, val waiter: Waiter): Event() {
 
     override fun execute(simulationCore: EventSimulationCore) {
+
+        customerGroup.table().setStatus("Skupina ${customerGroup.getID()} čaka na jedlo")
+
         val rCore = simulationCore as RestaurantSimulationCore
 
         for (i in 1..customerGroup.type.count()) {

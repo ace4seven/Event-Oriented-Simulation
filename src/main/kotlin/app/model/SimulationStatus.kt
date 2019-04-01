@@ -10,7 +10,7 @@ class CalendarData {
         fun make(time: Double, desc: String): CalendarData {
             val data = CalendarData()
             data.desc = desc
-            data.time = C.timeFormatter(time)
+            data.time = C.timeFormatterInc(time)
             return data
         }
     }
@@ -37,14 +37,14 @@ class WorkerData {
 class WaitingData {
     var id: String by property<String>()
     var capacity: String by property<String>()
-    var time: String by property<String>()
+//    var time: String by property<String>()
 
     companion object {
-        fun make(id: Int, capacity: String, time: Double): WaitingData {
+        fun make(id: Int, capacity: Int): WaitingData {
             val data = WaitingData()
             data.id = "${id}"
-            data.capacity = capacity
-            data.time = C.timeFormatter(time)
+            data.capacity = "${capacity}"
+//            data.time = C.timeFormatter(time)
             return data
         }
     }
@@ -85,10 +85,10 @@ class MealFrontData {
     var tableID: String by property<String>()
 
     companion object {
-        fun make(name: String, tableID: String): MealFrontData {
+        fun make(name: String, tableID: Int): MealFrontData {
             val data = MealFrontData()
             data.name = name
-            data.tableID = tableID
+            data.tableID = "${tableID}"
             return data
         }
     }

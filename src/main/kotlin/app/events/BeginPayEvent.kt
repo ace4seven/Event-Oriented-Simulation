@@ -17,9 +17,13 @@ class BeginPayEvent(override val time: Double, val customerGroup: CustomerGroup,
             rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORPAY), customerGroup.type.count())
         }
 
-        waiter.startWorking(time)
+        val endPayment = time + rCore.payGenerator.nextDouble()
+        waiter.startWorking(time, endPayment)
+        waiter.addStatus("Platenie skupina ${customerGroup.getID()}")
 
-        rCore.planEvent(EndPayEvent(time + rCore.payGenerator.nextDouble(), waiter, customerGroup))
+        customerGroup.table().setStatus("Skupina ${customerGroup.getID()} platí")
+
+        rCore.planEvent(EndPayEvent(endPayment, waiter, customerGroup))
     }
 
     override fun debugPrint() {

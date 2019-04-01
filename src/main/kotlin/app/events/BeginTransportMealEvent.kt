@@ -12,9 +12,10 @@ class BeginTransportMealEvent(override val time: Double, val meal: CustomerGroup
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        waiter.startWorking(time)
+        val endTransportTime = time + rCore.durationFoodToCustomerGenerator.nextDouble()
+        waiter.startWorking(time, endTransportTime)
 
-        rCore.planEvent(EndTransportMealEvent(time + rCore.durationFoodToCustomerGenerator.nextDouble(), waiter, meal))
+        rCore.planEvent(EndTransportMealEvent(endTransportTime, waiter, meal))
     }
 
     override fun debugPrint() {

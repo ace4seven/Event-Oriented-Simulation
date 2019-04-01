@@ -18,6 +18,7 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
         rCore.stats.averageFreeTimeWaiter[waiter.getID()] = waiter.getWorkingTime()
 
         rCore.tableManager.freeTable(customerGroup.table())
+        customerGroup.table().setStatus("Voľný stôl")
 
         when (customerGroup.table().type) {
             TableType.TWO -> {

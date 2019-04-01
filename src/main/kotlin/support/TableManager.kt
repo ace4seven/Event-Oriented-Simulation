@@ -1,6 +1,7 @@
 package support
 
 import app.model.CustomerGroupType
+import app.stats.StateStatistic
 
 enum class TableType {
     TWO, FOUR, SIX;
@@ -12,9 +13,24 @@ enum class TableType {
             SIX -> return "Stol pre šiestych"
         }
     }
+
+    fun count(): Int {
+        when (this) {
+            TWO -> return 2
+            FOUR -> return 4
+            SIX -> return 6
+        }
+    }
 }
 
 data class RestaurantTable(val id: Int, val type: TableType) {
+
+    var status: String  = "Voľný"
+        private set
+
+    fun setStatus(value: String) {
+        this.status = value
+    }
 
 }
 
@@ -33,26 +49,38 @@ class TableManager {
     var sixTablesQueue = Queue<RestaurantTable>()
         private set
 
-    init {
-        prepareTables()
-    }
-
     fun getTablesStatus(): String {
         return "Tables(TWO:${twoTablesQueue.size()}, FOUR:${fourTablesQueue.size()}, SIX:${sixTablesQueue.size()})"
     }
 
-    private fun prepareTables() {
-        for (i in 1..twoPersonTablesSum) { twoTablesQueue.add(RestaurantTable(i, TableType.TWO)) }
-        for (i in 1..fourPersonTablesSum) { fourTablesQueue.add(RestaurantTable(i, TableType.FOUR)) }
-        for (i in 1..sixPersonTablesSum) { sixTablesQueue.add(RestaurantTable(i, TableType.SIX)) }
+    fun prepareTables(states: StateStatistic? = null) {
+        var index = 1
+        for (i in 1..twoPersonTablesSum) {
+            val table = RestaurantTable(index, TableType.TWO)
+            states?.subscribeTable(table)
+            twoTablesQueue.add(table)
+            index += 1
+        }
+        for (i in 1..fourPersonTablesSum) {
+            val table = RestaurantTable(index, TableType.FOUR)
+            states?.subscribeTable(table)
+            fourTablesQueue.add(table)
+            index += 1
+        }
+        for (i in 1..sixPersonTablesSum) {
+            val table = RestaurantTable(index, TableType.SIX)
+            states?.subscribeTable(table)
+            sixTablesQueue.add(table)
+            index += 1
+        }
     }
 
-    fun reset() {
+    fun reset(states: StateStatistic? = null) {
         twoTablesQueue.clear()
         fourTablesQueue.clear()
         sixTablesQueue.clear()
 
-        prepareTables()
+        prepareTables(states)
     }
 
     fun findedTable(group: CustomerGroupType): RestaurantTable? {

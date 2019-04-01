@@ -2,6 +2,7 @@ package app.view
 
 import app.model.CalendarData
 import app.model.StatEntry
+import app.model.WorkerData
 import javafx.scene.chart.NumberAxis
 import javafx.scene.control.TabPane
 import javafx.scene.control.CheckBox
@@ -144,6 +145,16 @@ open class SimulationSubView : AppView("Simulácia") {
                                 averageWaitingMealChart.data.clear()
                                 averageWaitingMealChartData.data.clear()
                                 averageWaitingMealChart.series("", controller.averageWaitingMealChartData)
+                            }
+                        }
+
+                        button("Stav objektov") {
+                            minWidth = 150.0
+                            vboxConstraints {
+                                marginTop = 10.0
+                            }
+                            action {
+                                openInternalWindow(StateObjectView::class)
                             }
                         }
 
@@ -292,26 +303,6 @@ open class SimulationSubView : AppView("Simulácia") {
                             }
                         }
                         tab("Priebeh stavov") {
-                            vbox {
-                                hbox {
-                                    tableview<CalendarData> {
-                                        hboxConstraints {
-                                            marginTop = 20.0
-                                        }
-
-                                        items =controller.calendarStatesDataSource
-                                        minWidth = 450.0
-
-                                        selectionModel.isCellSelectionEnabled = true
-                                        column("Sim. čas", CalendarData::time) {
-                                            minWidth = 90.0
-                                        }
-                                        column("Hodnota štatistiky", CalendarData::desc) {
-                                            minWidth = 360.0
-                                        }
-                                    }
-                                }
-                            }
                         }
                     }
                 }

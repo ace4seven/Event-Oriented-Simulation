@@ -1,7 +1,5 @@
 package app.model
 
-import javafx.beans.property.Property
-import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
 
 class StatEntry {

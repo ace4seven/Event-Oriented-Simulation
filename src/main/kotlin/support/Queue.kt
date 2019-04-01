@@ -23,6 +23,10 @@ class Queue<Any> {
         }
     }
 
+    fun items(): MutableList<Any> {
+        return items
+    }
+
     fun peek():Any?{
         return items[0]
     }

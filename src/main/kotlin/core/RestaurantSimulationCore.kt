@@ -47,6 +47,7 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
     val durationFoodToCustomerGenerator = CEvenGenerator(23.0, 80.0, seedGenerator.nextLong())
 
     val globalStatistics = GlobalStatistics()
+
     var stateStats = StateStatistic()
 
     var isPaused = false
@@ -60,6 +61,10 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
     open fun pause() {
         isRunning = !isRunning
         isPaused =  !isPaused
+    }
+
+    init {
+        tableManager.prepareTables(stateStats)
     }
 
     override fun beforeSimulation(core: MCSimulationCore) {
@@ -91,7 +96,9 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
 
     override fun afterReplication(core: MCSimulationCore) {
         super.afterReplication(core)
-        globalStatistics.update(stats)
+        if (isFast) {
+            globalStatistics.update(stats)
+        }
 
         initializePersonal()
         prepareForSimulation()
@@ -118,8 +125,18 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
         freeWaiters.clear()
         freeChefs.clear()
 
-        for (i in 1..numberOfWaiters) { freeWaiters.add(Waiter(i)) }
-        for (i in 1..numberOfChefs) { freeChefs.add(Chef(i)) }
+        for (i in 1..numberOfWaiters) {
+            val waiter = Waiter(i)
+
+            stateStats.subscribeWaiter(waiter)
+            freeWaiters.add(waiter)
+        }
+        for (i in 1..numberOfChefs) {
+            val chef = Chef(i)
+
+            stateStats.subscribeChef(chef)
+            freeChefs.add(chef)
+        }
     }
 
     private fun emptyQueues() {

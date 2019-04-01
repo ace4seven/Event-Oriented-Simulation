@@ -17,6 +17,8 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
             rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORMEAL), customerGroup.type.count())
         }
 
+        customerGroup.table().setStatus("Skupina ${customerGroup.getID()} - jedia")
+
         waiter.stopWorking(time)
         rCore.freeWaiters.add(waiter)
         rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)

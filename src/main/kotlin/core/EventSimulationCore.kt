@@ -32,8 +32,6 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
                 Thread.sleep(100)
             }
 
-            afterEvent(this)
-
             val cEvent = timeLine.poll()
 
             if (C.DEBUG) { cEvent.debugPrint() }
@@ -44,6 +42,7 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
             cEvent.execute(this)
 
             if (!isFast) {
+                afterEvent(this)
                 updateGUI()
             }
         }

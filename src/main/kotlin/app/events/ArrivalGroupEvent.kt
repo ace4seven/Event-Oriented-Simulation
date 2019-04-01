@@ -47,6 +47,7 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
             }
 
             customerGroup.addTable(freeTable)
+            freeTable.setStatus("Prisla skupina ${customerGroup.type.count()}")
             if (rCore.freeWaiters.size > 0) {
                 val waiter = rCore.freeWaiters.poll()
                 rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
