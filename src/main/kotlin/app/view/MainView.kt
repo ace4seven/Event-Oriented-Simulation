@@ -12,10 +12,9 @@ class MainView : AppView("Udalostná simulácia - prevádzka: Reštaurácia FRI"
 
         tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
 
-        val firstTab = tab(SimulationSubView::class)
-//        tab(GrafyZavislosti::class)
-//        tab(TestSimulacie::class)
-//        tab(TestGeneratorovRP::class)
+        tab(SimulationSubView::class)
+        tab(WaiterDependencyView::class)
+        tab(ChefDependenyView::class)
     }
 
 }

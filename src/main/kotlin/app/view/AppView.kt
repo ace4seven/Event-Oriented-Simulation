@@ -22,6 +22,11 @@ abstract class AppView(title: String) : View(title) {
     protected var chefsTextField: TextField by singleAssign()
     protected var numOfDaysTextField: TextField by singleAssign()
 
+    protected var waiterDepreplicationTextField: TextField by singleAssign()
+    protected var waiterDepCount: TextField by singleAssign()
+    protected var waiterDepLow: TextField by singleAssign()
+    protected var waiterDepHigh: TextField by singleAssign()
+
     // AVERAGE CHART
     protected var averageWaitxAxis : NumberAxis = NumberAxis()
     protected var averageWaityAxis : NumberAxis = NumberAxis()

@@ -45,6 +45,36 @@ class AppController: Controller(), EventSimulationCoreObserver {
     val numberOfDaysProperty = SimpleIntegerProperty()
     val numberOfDays: Int by numberOfDaysProperty
 
+    // WAITER DEPENDENCY
+
+    val waiterDependencyReplicationProperty = SimpleIntegerProperty()
+    var waiterDependencyReplication: Int by waiterDependencyReplicationProperty
+
+    val waiterDependencyCountProperty = SimpleIntegerProperty()
+    var waiterDependencyCount: Int by waiterDependencyCountProperty
+
+    val waiterDependencyLowProperty = SimpleIntegerProperty()
+    val waiterDependencyLow:Int  by waiterDependencyLowProperty
+
+    val waiterDependencyHighProperty = SimpleIntegerProperty()
+    val waiterDependencyHigh:Int  by waiterDependencyHighProperty
+
+    var waiterDependencyChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
+
+    val chefDependencyReplicationProperty = SimpleIntegerProperty()
+    var chefDependencyReplication: Int by chefDependencyReplicationProperty
+
+    val chefDependencyCountProperty = SimpleIntegerProperty()
+    var chefDependencyCount: Int by chefDependencyCountProperty
+
+    val chefDependencyLowProperty = SimpleIntegerProperty()
+    val chefDependencyLow:Int  by chefDependencyLowProperty
+
+    val chefDependencyHighProperty = SimpleIntegerProperty()
+    val chefDependencyHigh:Int  by chefDependencyHighProperty
+
+    var chefDependencyChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
+
     // TABLES
     var mainStatsDataSource= FXCollections.observableArrayList<StatEntry>()
     var repDataSource= FXCollections.observableArrayList<StatEntry>()
@@ -70,6 +100,9 @@ class AppController: Controller(), EventSimulationCoreObserver {
     var progressProperty = SimpleDoubleProperty()
     var progress: Double by progressProperty
 
+    var isWaiterDependencySimulate = false
+    var isChefDependencySimulate = false
+
 
     private var restaurantCore = RestaurantSimulationCore(0, 0, 0.0, 0)
 
@@ -77,7 +110,38 @@ class AppController: Controller(), EventSimulationCoreObserver {
         restaurantCore.subscribe(this)
     }
 
+    fun startWaiterDependency() {
+        waiterDependencyChartData.clear()
+        isWaiterDependencySimulate = true
+        isChefDependencySimulate = false
+
+        for (i in waiterDependencyLow..waiterDependencyHigh) {
+            val simCore = RestaurantSimulationCore(waiterDependencyCount, i, 32400.0, waiterDependencyReplication.toLong())
+            simCore.subscribe(this)
+            simCore.isTurboMode = true
+            simCore.isFast = true
+            simCore.start()
+        }
+    }
+
+    fun startChefDependency() {
+        chefDependencyChartData.clear()
+        isWaiterDependencySimulate = false
+        isChefDependencySimulate = true
+
+        for (i in chefDependencyLow..chefDependencyHigh) {
+            val simCore = RestaurantSimulationCore(i, chefDependencyCount, 32400.0, chefDependencyReplication.toLong())
+            simCore.subscribe(this)
+            simCore.isTurboMode = true
+            simCore.isFast = true
+            simCore.start()
+        }
+    }
+
     fun startSimulationAction() {
+        isWaiterDependencySimulate = false
+        isChefDependencySimulate = false
+
         if (restaurantCore.isPaused) {
             restaurantCore.isFast = isFastMode
             restaurantCore.resume()
@@ -113,6 +177,15 @@ class AppController: Controller(), EventSimulationCoreObserver {
     }
 
     override fun refresh(core: EventSimulationCore) {
+        if (isWaiterDependencySimulate) {
+            val rCore = core as RestaurantSimulationCore
+            waiterDependencyChartData.add(XYChart.Data(core.numberOfChefs, rCore.stats.getAverageWaitingTime().median()))
+            return
+        } else if (isChefDependencySimulate) {
+            val rCore = core as RestaurantSimulationCore
+            chefDependencyChartData.add(XYChart.Data(core.numberOfWaiters, rCore.stats.getAverageWaitingTime().median()))
+            return
+        }
         if (!core.isFast) {
             simulationTime = C.timeFormatterInc(restaurantCore.cTime)
             refreshStates(restaurantCore.stateStats)
