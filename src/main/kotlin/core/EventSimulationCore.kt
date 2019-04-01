@@ -1,41 +1,106 @@
 package core
 
+import javafx.application.Platform
 import java.lang.Exception
 import java.util.*
 
-abstract class EventSimulationCore(val maxTime: Double, replications: Long): MCSimulationCore(replications) {
+interface EventSimulationCoreObserver {
+    fun refresh(core: EventSimulationCore)
+    fun progress(percentage: Double)
+}
 
-    private var timeLine: PriorityQueue<Event> = PriorityQueue()
-    private var skipTime: Double = 100.0
+abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCSimulationCore(replications) {
+
+    var timeLine: PriorityQueue<Event> = PriorityQueue()
+        private set
+
+    private var skipTime: Double = 1.0
+    private var progress: Double = 0.0
+
+    var isCooling = false
+    var isFast = false
+    var isTurboMode = false
+
+
+    private var observers = arrayListOf<EventSimulationCoreObserver>()
 
     var cTime: Double = 0.0
         private set
 
-    private var isRunning: Boolean = true
-
-    init {
-        planEvent(SystemEvent(cTime))
-    }
+    protected var isRunning: Boolean = true
 
     private fun simulate() {
-        while (timeLine.size > 0 && cTime < maxTime && isRunning) {
+        while (timeLine.size > 0 && ((cTime <= maxTime) || isCooling)) {
+
+            while (!isRunning) {
+                Thread.sleep(100)
+            }
+
             val cEvent = timeLine.poll()
 
-            if (C.DEBUG) { cEvent.debugPrint() }
+//            if (C.DEBUG) { cEvent.debugPrint() }
 
             cTime = cEvent.time
-            if (cTime >= maxTime) { break }
+
+            updateProgress()
+
+            if ((cTime > maxTime) && !isCooling) { break }
 
             cEvent.execute(this)
+
+            if (!isFast) {
+                afterEvent(this)
+            }
+
+            if (!isTurboMode && !isFast) {
+                updateGUI()
+            }
         }
     }
 
+    private fun updateProgress() {
+        if (isFast && replication > 0) {
+            val status = currentReplication.toDouble() / replication.toDouble() * 100
+            if (status > progress) {
+                progress += 1
+                observers.forEach {
+                    it.progress(progress / 100.0)
+                }
+            }
+        } else {
+            val status = cTime.toDouble() / maxTime * 100
+            if (status > progress) {
+                progress += 1
+                observers.forEach {
+                    it.progress(progress / 100.0)
+                }
+            }
+        }
+    }
+
+    private fun updateGUI() {
+        observers.forEach {
+            Platform.runLater(Runnable {
+                it.refresh(this)
+            })
+        }
+        Thread.sleep(1)
+    }
+
+    open fun subscribe(controller: EventSimulationCoreObserver) {
+        observers.add(controller)
+    }
+
     open fun changeSkipTime(time: Double) {
-        skipTime = time
+        skipTime = Math.pow(time, 0.5)
     }
 
     open fun getSkipTime(): Double {
         return skipTime
+    }
+
+    open fun restartCTime() {
+        cTime = 0.0
     }
 
     open fun planEvent(event: Event) {
@@ -45,25 +110,42 @@ abstract class EventSimulationCore(val maxTime: Double, replications: Long): MCS
         timeLine.add(event)
     }
 
-    override fun beforeSimulation(core: MCSimulationCore) {
-
-    }
-
-    override fun beforeReplication(core: MCSimulationCore) {
-
-    }
-
     override fun replication(core: MCSimulationCore) {
         simulate()
     }
 
     override fun afterReplication(core: MCSimulationCore) {
+        timeLine.clear()
+
+        if (isFast && !isTurboMode) {
+            if (currentReplication.toDouble() / replication.toDouble() >= 0.1 && canUpdateGui()) {
+                updateGUI()
+            }
+        }
+    }
+
+    override fun clear() {
         cTime = 0.0
         timeLine.clear()
     }
 
-    override fun afterSimulation(core: MCSimulationCore) {
-        println("Simulation end")
+    override fun beforeSimulation(core: MCSimulationCore) {
+        planEvent(SystemEvent(cTime))
     }
+
+    override fun afterSimulation(core: MCSimulationCore) {
+        updateGUI()
+    }
+
+    private fun canUpdateGui():Boolean {
+        if (replication < 4000) {
+            return true
+        }
+        val factor = replication / 4000
+
+        return currentReplication.toLong() % factor == 0.toLong()
+    }
+
+    open fun afterEvent(core: EventSimulationCore) {}
 
 }

@@ -12,6 +12,10 @@ import kotlin.math.min
 class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup, val waiter: Waiter): Event() {
 
     override fun execute(simulationCore: EventSimulationCore) {
+        val canTrackWeights = !simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime
+
+        customerGroup.table().setStatus("Skupina ${customerGroup.getID()} čaka na jedlo")
+
         val rCore = simulationCore as RestaurantSimulationCore
 
         for (i in 1..customerGroup.type.count()) {
@@ -19,18 +23,31 @@ class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup,
         }
 
         waiter.stopWorking(time)
+
         rCore.freeWaiters.add(waiter)
-        rCore.stats.averageWorkingTimesWaiters[waiter.getID()] = waiter.getWorkingTime()
+        rCore.stats.averageFreeTimeWaiter[waiter.getID()] = waiter.getWorkingTime()
+        if (canTrackWeights) {
+            rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
+        }
 
         if (rCore.fifoService.size() > 0) {
             val group = rCore.fifoService.pop()!!
             rCore.planEvent(BeginOrderEvent(time, group, rCore.freeWaiters.poll()))
+            if (canTrackWeights) {
+                rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
+            }
         } else if (rCore.fifoFinishMeal.size() > 0) {
             val meal = rCore.fifoFinishMeal.pop()!!
             rCore.planEvent(BeginTransportMealEvent(time, meal,  rCore.freeWaiters.poll()))
+            if (canTrackWeights) {
+                rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
+            }
         } else if (rCore.fifoPayment.size() > 0) {
             val group = rCore.fifoPayment.pop()!!
             rCore.planEvent(BeginPayEvent(time, group, rCore.freeWaiters.poll()))
+            if (canTrackWeights) {
+                rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
+            }
         }
 
         customerGroup.averageWaiting.startTrack(time, WaitType.FORMEAL)
@@ -39,11 +56,19 @@ class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup,
             for (i in 1..cookEventsSum) {
                 rCore.planEvent(BeginCookEvent(time, rCore.fifoOrder.pop()!!, rCore.freeChefs.poll()))
             }
+
+            if (canTrackWeights) {
+                rCore.stats.freeChefssWeight.addValue(time, rCore.freeChefs.size)
+            }
         }
     }
 
     override fun debugPrint() {
         C.message("END ORDER Customer(id: ${customerGroup.getID()}, count: ${customerGroup.type.count()}) Waiter(id: ${waiter.getID()}) TIME: $time")
+    }
+
+    override fun calendarDescription(): String {
+        return "Koniec objednavky pre skupinu ${customerGroup.getID()}, obsluha: ${waiter.getID()}"
     }
 
 }

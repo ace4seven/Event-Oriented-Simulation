@@ -2,8 +2,7 @@ package core
 
 import app.events.ArrivalGroupEvent
 import app.model.*
-import app.stats.AverageWaitingType
-import app.stats.Statistics
+import app.stats.*
 import core.generators.CEvenGenerator
 import core.generators.ExponencialGenerator
 import core.generators.TriangleGenerator
@@ -11,14 +10,15 @@ import support.FoodManager
 import support.Queue
 import support.TableManager
 import java.util.*
+import kotlin.math.max
 
-class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int, time: Double, replications: Long): EventSimulationCore(time, replications) {
+class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int, time: Double, replications: Long): EventSimulationCore(time, replications) {
 
     private val seedGenerator = Random()
 
     var customerGroupID = 1
 
-    var stats = Statistics(time)
+    val stats = Statistics()
 
     // MARK: MANAGERS
     val tableManager = TableManager()
@@ -47,7 +47,32 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     val payGenerator = CEvenGenerator(43.0, 97.0, seedGenerator.nextLong())
     val durationFoodToCustomerGenerator = CEvenGenerator(23.0, 80.0, seedGenerator.nextLong())
 
+    val globalStatistics = GlobalStatistics()
+    val localStatistics = LocalStatistics()
+
+    var stateStats = StateStatistic()
+
+    var isPaused = false
+        private set
+
+    open fun resume() {
+        isRunning = !isRunning
+        isPaused =  !isPaused
+    }
+
+    open fun pause() {
+        isRunning = !isRunning
+        isPaused =  !isPaused
+    }
+
     init {
+        tableManager.prepareTables(stateStats)
+    }
+
+    override fun beforeSimulation(core: MCSimulationCore) {
+        super.beforeSimulation(core)
+
+        stats.simulationTimeDuration = maxTime
         initializePersonal()
         prepareForSimulation()
     }
@@ -55,14 +80,7 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     override fun afterSimulation(core: MCSimulationCore) {
         super.afterSimulation(core)
 
-//        println("Priemerny cas cakania je: ${stats.getAverageTimeCustomerWait(AverageWaitingType.ALL)}")
-        println("LAVY IS: ${stats.getAverageTimeCustomerWait().first}")
-        println("Priemerny cas cakania SERVIS: ${stats.getAverageTimeCustomerWait().second}")
-        println("PRAVY IS: ${stats.getAverageTimeCustomerWait().third}")
-//        println("Priemerny cas cakania PAY: ${stats.getAverageTimeCustomerWait(AverageWaitingType.PAY)}")
-//        println("Priemerny cas cakania MEAL: ${stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL)}")
-        println("LEAVE - : ${stats.getLeavedCustomersPercentage() * 100.0}")
-        stats.getAverageWorkingTimes()
+        println("End of simulation")
     }
 
     override fun beforeReplication(core: MCSimulationCore) {
@@ -74,22 +92,54 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
     override fun afterReplication(core: MCSimulationCore) {
         super.afterReplication(core)
 
+        if (isCooling) {
+            stats.updateBusinessTime(cTime)
+            stats.simulationTimeDuration = cTime
+        } else {
+            stats.updateBusinessTime(maxTime)
+        }
+
+        restartCTime()
+
+        if (isFast) {
+            globalStatistics.update(stats)
+        }
         initializePersonal()
         prepareForSimulation()
         emptyQueues()
         tableManager.reset()
 
         stats.updateWithReplication()
+        customerGroupID = 1
+    }
+
+    override fun clear() {
+        super.clear()
+
+        stats.reset()
 
         customerGroupID = 1
+        initializePersonal()
+        emptyQueues()
+        tableManager.reset()
     }
 
     private fun initializePersonal() {
         freeWaiters.clear()
         freeChefs.clear()
 
-        for (i in 1..numberOfWaiters) { freeWaiters.add(Waiter(i)) }
-        for (i in 1..numberOfChefs) { freeChefs.add(Chef(i)) }
+        for (i in 1..numberOfWaiters) {
+            val waiter = Waiter(i)
+
+            stateStats.subscribeWaiter(waiter)
+            freeWaiters.add(waiter)
+        }
+        for (i in 1..numberOfChefs) {
+            val chef = Chef(i)
+
+            stateStats.subscribeChef(chef)
+            freeChefs.add(chef)
+        }
     }
 
     private fun emptyQueues() {
@@ -116,6 +166,11 @@ class RestaurantSimulationCore(val numberOfWaiters: Int, val numberOfChefs: Int,
 
         customerGroupID += 1
         planEvent(ArrivalGroupEvent(cTime + sixCustomerGenerator.nextDouble(), CustomerGroup(customerGroupID, CustomerGroupType.SIX)))
+    }
+
+    override fun afterEvent(core: EventSimulationCore) {
+        stateStats.updateStates(this)
+        localStatistics.update(stats, cTime)
     }
 
 }

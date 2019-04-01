@@ -10,7 +10,7 @@ class AverageWaitingStat {
 
     private var serviceWaitingTime = WaitingEntry(WaitType.FORSERVICE)
     private var mealWaitingTime = WaitingEntry(WaitType.FORMEAL)
-    var payWaitingTime = WaitingEntry(WaitType.FORPAY)
+    private var payWaitingTime = WaitingEntry(WaitType.FORPAY)
 
     var canStopTrack = false
         private set
@@ -47,11 +47,7 @@ class AverageWaitingStat {
             }
             WaitType.FORPAY -> {
                 val result = cTime - payWaitingTime.start
-                if (result < 0) {
-                    println(cTime)
-                    println(payWaitingTime.start)
-                    throw Exception("STATISTIC TIME ERROR COUNTING")
-                }
+                if (result < 0) { throw Exception("STATISTIC TIME ERROR COUNTING") }
                 payWaitingTime.result = (cTime - payWaitingTime.start)
             }
         }
@@ -65,6 +61,10 @@ class AverageWaitingStat {
             WaitType.FORMEAL -> return mealWaitingTime
             WaitType.FORPAY -> return payWaitingTime
         }
+    }
+
+    fun getResult(): Double {
+        return (serviceWaitingTime.result + mealWaitingTime.result + payWaitingTime.result)
     }
 
 }

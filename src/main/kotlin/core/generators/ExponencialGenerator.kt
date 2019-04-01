@@ -13,6 +13,7 @@ class ExponencialGenerator(val lambda: Double, seed: Long?): Generator(seed), Ex
         if (n == 0.0) {
             throw Exception("Zero cannot be assign")
         }
+
         return -1 / lambda * Math.log(n)
     }
 

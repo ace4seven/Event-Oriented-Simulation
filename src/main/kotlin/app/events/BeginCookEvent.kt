@@ -11,8 +11,11 @@ class BeginCookEvent(override val time: Double, val meal: Order, val chef: Chef)
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        chef.startWorking(time)
-        rCore.planEvent(EndCookEvent(time + meal.orderSession.duration, chef, meal))
+        val endCooktime = time + meal.orderSession.duration
+
+        chef.startWorking(time, endCooktime)
+        chef.addStatus("Varí ${meal.orderSession.foodType.foodName()} pre ${meal.customerGroup.getID()}")
+        rCore.planEvent(EndCookEvent(endCooktime, chef, meal))
     }
 
     override fun debugPrint() {
@@ -21,6 +24,10 @@ class BeginCookEvent(override val time: Double, val meal: Order, val chef: Chef)
                 "for customer(id: ${meal.customerGroup.getID()}, " +
                 "table: ${meal.customerGroup.table().type.desc()})" +
                 " TIME: ${time}")
+    }
+
+    override fun calendarDescription(): String {
+        return "Začiatok varenia: ${meal.orderSession.foodType.foodName()}, Kuchár: ${chef.getID()} pre skupinu: ${meal.customerGroup.getID()}"
     }
 
 }

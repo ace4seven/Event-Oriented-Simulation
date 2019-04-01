@@ -50,6 +50,10 @@ class CustomerGroup(id: Int, val type: CustomerGroupType): Person(id) {
         finishedMeals += 1
     }
 
+    fun getFinishedMeals(): Int {
+        return finishedMeals
+    }
+
     fun isReadyForDeploy(): Boolean {
         return finishedMeals == type.count()
     }
