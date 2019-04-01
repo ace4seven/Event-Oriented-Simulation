@@ -10,12 +10,15 @@ class EndCookEvent(override val time: Double, val chef: Chef, val order: Order):
 
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
+        val canTrackWeights = !simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime
 
         chef.stopWorking(time)
 
         rCore.freeChefs.add(chef)
         rCore.stats.averageFreeTimeChef[chef.getID()] = chef.getWorkingTime()
-        rCore.stats.freeChefssWeight.updateChange(time, rCore.freeChefs.size)
+        if (canTrackWeights) {
+            rCore.stats.freeChefssWeight.updateChange(time, rCore.freeChefs.size)
+        }
 
         order.customerGroup.incMeals()
 
@@ -26,13 +29,17 @@ class EndCookEvent(override val time: Double, val chef: Chef, val order: Order):
             if (rCore.freeWaiters.size > 0) {
                 val group = rCore.fifoFinishMeal.pop()!!
                 rCore.planEvent(BeginTransportMealEvent(time, group, rCore.freeWaiters.poll()))
-                rCore.stats.freeChefssWeight.updateChange(time, rCore.freeWaiters.size)
+                if (canTrackWeights) {
+                    rCore.stats.freeChefssWeight.updateChange(time, rCore.freeWaiters.size)
+                }
             }
         }
 
         if (rCore.fifoOrder.size() > 0) {
             rCore.planEvent(BeginCookEvent(time, rCore.fifoOrder.pop()!!, rCore.freeChefs.poll()))
-            rCore.stats.freeChefssWeight.updateChange(time, rCore.freeChefs.size)
+            if (canTrackWeights) {
+                rCore.stats.freeChefssWeight.updateChange(time, rCore.freeChefs.size)
+            }
         }
     }
 

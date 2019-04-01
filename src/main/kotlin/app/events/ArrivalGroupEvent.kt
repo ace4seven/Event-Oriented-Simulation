@@ -36,15 +36,17 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
 
             C.message("     !!!NO FREE TABLE Customer(id:${customerGroup.getID()}, count: ${customerGroup.type.count()}) ${rCore.tableManager.getTablesStatus()}")
         } else {
-            when (freeTable.type) {
-                TableType.TWO -> {
-                    rCore.stats.freeTableTwoWeight.updateChange(time, rCore.tableManager.twoTablesQueue.size())
-                }
-                TableType.FOUR -> {
-                    rCore.stats.freeTableFourWeight.updateChange(time, rCore.tableManager.fourTablesQueue.size())
-                }
-                TableType.SIX -> {
-                    rCore.stats.freeTableSixWeight.updateChange(time, rCore.tableManager.sixTablesQueue.size())
+            if (!simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime) {
+                when (freeTable.type) {
+                    TableType.TWO -> {
+                        rCore.stats.freeTableTwoWeight.updateChange(time, rCore.tableManager.twoTablesQueue.size())
+                    }
+                    TableType.FOUR -> {
+                        rCore.stats.freeTableFourWeight.updateChange(time, rCore.tableManager.fourTablesQueue.size())
+                    }
+                    TableType.SIX -> {
+                        rCore.stats.freeTableSixWeight.updateChange(time, rCore.tableManager.sixTablesQueue.size())
+                    }
                 }
             }
 
@@ -52,7 +54,10 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
             freeTable.setStatus("Prisla skupina ${customerGroup.type.count()}")
             if (rCore.freeWaiters.size > 0) {
                 val waiter = rCore.freeWaiters.poll()
-                rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+
+                if (!simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime) {
+                    rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+                }
 
                 C.message("     !!!TABLE STATUS ${rCore.tableManager.getTablesStatus()}")
                 rCore.planEvent(BeginOrderEvent(time, customerGroup, waiter))

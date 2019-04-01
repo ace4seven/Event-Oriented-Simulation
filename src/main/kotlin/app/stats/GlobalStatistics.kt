@@ -19,6 +19,9 @@ class GlobalStatistics {
                         "Aktuálna replikácia",
                         "${stats.getCurrentReplication()}"),
                 makeStatEntry(
+                        "Denná prevádzka čas",
+                        formatStatisticWithTime(stats.getAverageBusinessTime())),
+                makeStatEntry(
                         "Priemerný čas čakania",
                         formatStatistic(stats.getAverageTimeCustomerWait())),
                 makeStatEntry(
@@ -84,6 +87,12 @@ class GlobalStatistics {
         return "${data.median() * 100} %" +
                 " - IS: <${if (data.ISLeft() != null) data.ISLeft()!! * 100 else "NO_DATA"}, " +
                 "${if (data.ISRight() != null) data.ISRight()!! * 100 else "NO_DATA"}>"
+    }
+
+    private fun formatStatisticWithTime(data: ConfidenceInterval): String {
+        return "${C.timeFormatter(data.median())} " +
+                " - IS: <${if (data.ISLeft() != null) C.timeFormatter(data.ISLeft()!!) else "NO_DATA"}, " +
+                "${if (data.ISRight() != null) C.timeFormatter(data.ISRight()!!) else "NO_DATA"}>"
     }
 
 }

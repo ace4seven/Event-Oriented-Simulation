@@ -10,6 +10,7 @@ import support.FoodManager
 import support.Queue
 import support.TableManager
 import java.util.*
+import kotlin.math.max
 
 class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int, time: Double, replications: Long): EventSimulationCore(time, replications) {
 
@@ -77,15 +78,6 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
 
     override fun afterSimulation(core: MCSimulationCore) {
         super.afterSimulation(core)
-
-        println(stats.getHeight(HeightType.WAITER).second)
-        println(stats.getHeight(HeightType.CHEF).second)
-        println("STOLY")
-        println(stats.getHeight(HeightType.TABLE_TWO).second)
-        println(stats.getHeight(HeightType.TABLE_FOUR).second)
-        println(stats.getHeight(HeightType.TABLE_SIX).second)
-
-        stats.getAverageWorkingTimes()
     }
 
     override fun beforeReplication(core: MCSimulationCore) {
@@ -96,17 +88,24 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
 
     override fun afterReplication(core: MCSimulationCore) {
         super.afterReplication(core)
+
+        if (isCooling) {
+            stats.updateBusinessTime(cTime)
+        } else {
+            stats.updateBusinessTime(maxTime)
+        }
+
+        restartCTime()
+
         if (isFast) {
             globalStatistics.update(stats)
         }
-
         initializePersonal()
         prepareForSimulation()
         emptyQueues()
         tableManager.reset()
 
         stats.updateWithReplication()
-
         customerGroupID = 1
     }
 

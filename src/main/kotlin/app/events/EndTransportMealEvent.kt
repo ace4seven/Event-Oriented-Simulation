@@ -11,6 +11,7 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
 
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
+        val canTrackWeights = !simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime
 
         if (customerGroup.averageWaiting.canStopTrack) {
             customerGroup.averageWaiting.stopTrack(time, WaitType.FORMEAL)
@@ -21,7 +22,9 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
 
         waiter.stopWorking(time)
         rCore.freeWaiters.add(waiter)
-        rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+        if (canTrackWeights) {
+            rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+        }
         rCore.stats.averageFreeTimeWaiter[waiter.getID()] = waiter.getWorkingTime()
 
         var finishEatingTime = 0.0
@@ -35,15 +38,21 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
         if (rCore.fifoService.size() > 0) {
             val group = rCore.fifoService.pop()!!
             rCore.planEvent(BeginOrderEvent(time, group, rCore.freeWaiters.poll()))
-            rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+            if (canTrackWeights) {
+                rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+            }
         } else if (rCore.fifoFinishMeal.size() > 0) {
             val meal = rCore.fifoFinishMeal.pop()!!
             rCore.planEvent(BeginTransportMealEvent(time, meal,  rCore.freeWaiters.poll()))
-            rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+            if (canTrackWeights) {
+                rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+            }
         } else if (rCore.fifoPayment.size() > 0) {
             val group = rCore.fifoPayment.pop()!!
             rCore.planEvent(BeginPayEvent(time, group, rCore.freeWaiters.poll()))
-            rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+            if (canTrackWeights) {
+                rCore.stats.freeWaitersWeight.updateChange(time, rCore.freeWaiters.size)
+            }
         }
 
         rCore.planEvent(EndEatingEvent(time + finishEatingTime, customerGroup))

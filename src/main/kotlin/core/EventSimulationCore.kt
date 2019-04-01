@@ -69,6 +69,10 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
         return skipTime
     }
 
+    open fun restartCTime() {
+        cTime = 0.0
+    }
+
     open fun planEvent(event: Event) {
         if (event.time < cTime) {
             throw Exception("Porušená časová kauzalita")
@@ -81,7 +85,6 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
     }
 
     override fun afterReplication(core: MCSimulationCore) {
-        cTime = 0.0
         timeLine.clear()
 
         if (isFast) {

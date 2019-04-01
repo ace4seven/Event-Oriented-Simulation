@@ -7,6 +7,8 @@ private class RStatistics {
     var averageWaitingForMeal = ConfidenceInterval()
     var averageWaitingForPay = ConfidenceInterval()
 
+    var averageBussinesTime = ConfidenceInterval()
+
     var freeWaitersWeight = ConfidenceInterval()
     var freeChefssWeight = ConfidenceInterval()
     var freeTableTwoWeight = ConfidenceInterval()
@@ -36,6 +38,8 @@ class Statistics() {
     private var averageWaitingForMeal: Double = 0.0
     private var averageWaitingForPay: Double = 0.0
 
+    private var businessTime: Double = 0.0
+
     var averageFreeTimeChef = HashMap<Int, Double>()
     var averageFreeTimeWaiter = HashMap<Int, Double>()
 
@@ -63,6 +67,10 @@ class Statistics() {
         return Triple(rStatistics.customersSums / cReplication,
                 rStatistics.leavedCustomers / cReplication,
                 rStatistics.leavePercentage)
+    }
+
+    fun getAverageBusinessTime(): ConfidenceInterval {
+        return rStatistics.averageBussinesTime
     }
 
     fun getAverageTimeCustomerWait(type: AverageWaitingType? = null): Triple<Double?, Double, Double?> {
@@ -100,6 +108,10 @@ class Statistics() {
                         rStatistics.averageWaitingForPay.ISRight())
             }
         }
+    }
+
+    fun updateBusinessTime(time: Double) {
+        this.businessTime = time
     }
 
     fun increaseAverage(entry: WaitingEntry, count: Int) {
@@ -152,6 +164,7 @@ class Statistics() {
 
         rStatistics.leavePercentage.addMedianPart(leavedCustomers.toDouble() / customersSums.toDouble())
 
+        rStatistics.averageBussinesTime.addMedianPart(businessTime)
         clearNumbs()
     }
 
