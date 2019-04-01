@@ -204,9 +204,9 @@ class Statistics() {
     }
 
     fun updateWithReplication() {
-        rStatistics.averageWaitingForService.addMedianPart((averageWaitingForService / (customersSums - leavedCustomers)))
-        rStatistics.averageWaitingForMeal.addMedianPart((averageWaitingForMeal / (customersSums - leavedCustomers)))
-        rStatistics.averageWaitingForPay.addMedianPart((averageWaitingForPay / (customersSums - leavedCustomers)))
+        rStatistics.averageWaitingForService.addMedianPart((averageWaitingForService / (customersSums - leavedCustomers).toDouble()))
+        rStatistics.averageWaitingForMeal.addMedianPart((averageWaitingForMeal / (customersSums - leavedCustomers).toDouble()))
+        rStatistics.averageWaitingForPay.addMedianPart((averageWaitingForPay / (customersSums - leavedCustomers).toDouble()))
 
         rStatistics.freeChefssWeight.addMedianPart(freeChefssWeight.getWeight())
         rStatistics.freeWaitersWeight.addMedianPart(freeWaitersWeight.getWeight())

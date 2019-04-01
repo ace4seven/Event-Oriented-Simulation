@@ -30,9 +30,7 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
     protected var isRunning: Boolean = true
 
     private fun simulate() {
-        while (timeLine.size > 0 && ((cTime < maxTime) || isCooling)) {
-
-            updateProgress()
+        while (timeLine.size > 0 && ((cTime <= maxTime) || isCooling)) {
 
             while (!isRunning) {
                 Thread.sleep(100)
@@ -43,7 +41,10 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
 //            if (C.DEBUG) { cEvent.debugPrint() }
 
             cTime = cEvent.time
-            if ((cTime >= maxTime) && !isCooling) { break }
+
+            updateProgress()
+
+            if ((cTime > maxTime) && !isCooling) { break }
 
             cEvent.execute(this)
 
@@ -133,9 +134,7 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
     }
 
     override fun afterSimulation(core: MCSimulationCore) {
-        if (isTurboMode) {
-            updateGUI()
-        }
+        updateGUI()
     }
 
     private fun canUpdateGui():Boolean {

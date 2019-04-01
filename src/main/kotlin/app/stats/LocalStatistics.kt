@@ -95,7 +95,7 @@ class LocalStatistics {
 
 
     private fun formatStatisticWithTime(data: Double): String {
-        return "${C.timeFormatter(data)}"
+        return "${C.timeFormatterInc(data)}"
     }
 
 }

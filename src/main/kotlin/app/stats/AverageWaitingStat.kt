@@ -47,11 +47,7 @@ class AverageWaitingStat {
             }
             WaitType.FORPAY -> {
                 val result = cTime - payWaitingTime.start
-                if (result < 0) {
-                    println(cTime)
-                    println(payWaitingTime.start)
-                    throw Exception("STATISTIC TIME ERROR COUNTING")
-                }
+                if (result < 0) { throw Exception("STATISTIC TIME ERROR COUNTING") }
                 payWaitingTime.result = (cTime - payWaitingTime.start)
             }
         }
