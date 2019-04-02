@@ -14,7 +14,6 @@ class BeginPayEvent(override val time: Double, val customerGroup: CustomerGroup,
 
         if (customerGroup.averageWaiting.canStopTrack) {
             customerGroup.averageWaiting.stopTrack(time, WaitType.FORPAY)
-            rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORPAY), customerGroup.type.count())
         }
 
         val endPayment = time + rCore.payGenerator.nextDouble()

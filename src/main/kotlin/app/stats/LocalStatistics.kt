@@ -22,7 +22,7 @@ class LocalStatistics {
                         formatStatisticWithTime(currentTime)),
                 makeStatEntry(
                         "Priemerný čas čakania",
-                        "${stats.waitingTime / stats.customersFinishEating.toDouble()}"),
+                        "${stats.waitingTimeAll / stats.customersFinishEating.toDouble()}"),
 //                makeStatEntry(
 //                        "Priemerný čas čakania - obsluha",
 //                        "${stats.getTimeCustomersWait(AverageWaitingType.SERVICE)}"),

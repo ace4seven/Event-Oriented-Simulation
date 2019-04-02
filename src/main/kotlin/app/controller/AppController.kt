@@ -186,6 +186,7 @@ class AppController: Controller(), EventSimulationCoreObserver {
             chefDependencyChartData.add(XYChart.Data(core.numberOfWaiters, rCore.stats.getAverageWaitingTime().median()))
             return
         }
+
         if (!core.isFast) {
             simulationTime = C.timeFormatterInc(restaurantCore.cTime)
             refreshStates(restaurantCore.stateStats)
@@ -202,10 +203,10 @@ class AppController: Controller(), EventSimulationCoreObserver {
                 }
             }
 
-            val averageWaitingTimeAll = restaurantCore.stats.getAverageTimeCustomerWait().second / 60
-            val averageWaitingTimeService = restaurantCore.stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE).second / 60
-            val averageWaitingTimeMeal = restaurantCore.stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL).second / 60
-            val averageWaitingTimePay = restaurantCore.stats.getAverageTimeCustomerWait(AverageWaitingType.PAY).second / 60
+            val averageWaitingTimeAll = restaurantCore.stats.getAverageWaitingTime().median()
+            val averageWaitingTimeService = restaurantCore.stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE).second
+            val averageWaitingTimeMeal = restaurantCore.stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL).second
+            val averageWaitingTimePay = restaurantCore.stats.getAverageTimeCustomerWait(AverageWaitingType.PAY).second
 
             averageWaitingChartData.add(XYChart.Data(restaurantCore.currentReplication, averageWaitingTimeAll))
             averageWaitingServiceChartData.add(XYChart.Data(restaurantCore.currentReplication, averageWaitingTimeService))

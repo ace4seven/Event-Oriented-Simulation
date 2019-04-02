@@ -12,8 +12,6 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        rCore.stats.customerIn(customerGroup.type.count())
-
         var nextCome = 0.0
         when (customerGroup.type) {
             CustomerGroupType.ONE -> nextCome = rCore.oneCustomerGenerator.nextDouble()
@@ -27,7 +25,11 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
         if (!rCore.isCooling || rCore.cTime < rCore.maxTime) {
             rCore.customerGroupID += 1
             rCore.planEvent(ArrivalGroupEvent(nextCome + time, CustomerGroup(rCore.customerGroupID, customerGroup.type)))
+        } else {
+            return
         }
+
+        rCore.stats.customerIn(customerGroup.type.count())
 
         val freeTable = rCore.tableManager.findedTable(customerGroup.type)
 

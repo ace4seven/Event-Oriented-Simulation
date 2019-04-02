@@ -14,7 +14,6 @@ class BeginOrderEvent(override val time: Double, val customerGroup: CustomerGrou
 
         if (customerGroup.averageWaiting.canStopTrack) {
             customerGroup.averageWaiting.stopTrack(time, WaitType.FORSERVICE)
-            rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORSERVICE), customerGroup.type.count())
         }
 
         val endOrderTime = time + rCore.serviceGenerator.nextDouble()

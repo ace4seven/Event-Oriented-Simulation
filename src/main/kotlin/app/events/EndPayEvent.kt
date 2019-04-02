@@ -13,7 +13,8 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
         val rCore = simulationCore as RestaurantSimulationCore
         val canTrackWeights = !simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime
 
-        rCore.stats.waitingTime += customerGroup.averageWaiting.getResult() * customerGroup.type.count().toDouble()
+        rCore.stats.updateWaitingTime(customerGroup)
+
         rCore.stats.customersFinishEating += customerGroup.type.count()
 
         waiter.stopWorking(time)

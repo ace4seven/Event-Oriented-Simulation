@@ -1,5 +1,6 @@
 package app.stats
 
+import app.model.CustomerGroup
 import core.ConfidenceInterval
 
 private class RStatistics {
@@ -37,11 +38,11 @@ class Statistics() {
     private var cReplication: Int = 0
     private var businessTime: Double = 0.0
 
-    var averageWaitingForService: Double = 0.0
-    var averageWaitingForMeal: Double = 0.0
-    var averageWaitingForPay: Double = 0.0
+    var waitingTimeAll = 0.0
+    var waitingTimeMeal = 0.0
+    var waitingTimePay = 0.0
+    var waitingTimeService = 0.0
 
-    var waitingTime = 0.0
     var customersFinishEating = 0
 
     var averageFreeTimeChef = HashMap<Int, Double>()
@@ -65,17 +66,6 @@ class Statistics() {
         return Pair(averageFreeTimeWaiter, averageFreeTimeChef)
     }
 
-    fun getTimeCustomersWait(type: AverageWaitingType? = null): Double {
-        if (type == null) {
-            return (averageWaitingForMeal + averageWaitingForPay + averageWaitingForService) / if (customersSums - leavedCustomers == 0) 0 else customersSums - leavedCustomers
-        }
-        when(type) {
-            AverageWaitingType.SERVICE -> return averageWaitingForService / if (customersSums - leavedCustomers == 0) 0 else customersSums - leavedCustomers
-            AverageWaitingType.MEAL -> return averageWaitingForMeal / if (customersSums - leavedCustomers == 0) 0 else customersSums - leavedCustomers
-            AverageWaitingType.PAY -> return averageWaitingForPay / if (customersSums - leavedCustomers == 0) 0 else customersSums - leavedCustomers
-        }
-    }
-
 
     // MARK: - SIMULATION STATISTICS
 
@@ -83,9 +73,9 @@ class Statistics() {
         return Triple(rStatistics.averageFreeTimeWaiter, rStatistics.averageFeeTimeChef, cReplication)
     }
 
-    fun getAverageArrivalStats(): Triple<Int, Int, ConfidenceInterval> {
-        return Triple(rStatistics.customersSums / cReplication,
-                rStatistics.leavedCustomers / cReplication,
+    fun getAverageArrivalStats(): Triple<Double, Double, ConfidenceInterval> {
+        return Triple(rStatistics.customersSums.toDouble() / cReplication,
+                rStatistics.leavedCustomers.toDouble() / cReplication,
                 rStatistics.leavePercentage)
     }
 
@@ -192,13 +182,13 @@ class Statistics() {
         this.businessTime = time
     }
 
-    fun increaseAverage(entry: WaitingEntry, count: Int) {
-        when(entry.type) {
-            WaitType.FORSERVICE -> averageWaitingForService += (entry.result * count)
-            WaitType.FORMEAL -> averageWaitingForMeal += (entry.result * count)
-            WaitType.FORPAY -> averageWaitingForPay += (entry.result * count)
-        }
-    }
+//    fun increaseAverage(entry: WaitingEntry, count: Int) {
+//        when(entry.type) {
+//            WaitType.FORSERVICE -> averageWaitingForService += (entry.result * count)
+//            WaitType.FORMEAL -> averageWaitingForMeal += (entry.result * count)
+//            WaitType.FORPAY -> averageWaitingForPay += (entry.result * count)
+//        }
+//    }
 
     fun incReplication() {
         cReplication += 1
@@ -212,10 +202,18 @@ class Statistics() {
         leavedCustomers += count
     }
 
+    fun updateWaitingTime(customerGroup: CustomerGroup) {
+        waitingTimeAll += customerGroup.averageWaiting.getResult() * customerGroup.type.count().toDouble()
+        waitingTimeService += customerGroup.averageWaiting.getResult(WaitType.FORSERVICE).result * customerGroup.type.count().toDouble()
+        waitingTimeMeal += customerGroup.averageWaiting.getResult(WaitType.FORMEAL).result * customerGroup.type.count().toDouble()
+        waitingTimePay += customerGroup.averageWaiting.getResult(WaitType.FORPAY).result * customerGroup.type.count().toDouble()
+    }
+
     fun updateWithReplication() {
-        rStatistics.averageWaitingForService.addMedianPart((averageWaitingForService / (customersSums - leavedCustomers).toDouble()))
-        rStatistics.averageWaitingForMeal.addMedianPart((averageWaitingForMeal / (customersSums - leavedCustomers).toDouble()))
-        rStatistics.averageWaitingForPay.addMedianPart((averageWaitingForPay / (customersSums - leavedCustomers).toDouble()))
+        rStatistics.averageWaitingTime.addMedianPart(waitingTimeAll / customersFinishEating.toDouble())
+        rStatistics.averageWaitingForService.addMedianPart(waitingTimeService / customersFinishEating.toDouble())
+        rStatistics.averageWaitingForMeal.addMedianPart((waitingTimeMeal / customersFinishEating.toDouble()))
+        rStatistics.averageWaitingForPay.addMedianPart((waitingTimePay / customersFinishEating.toDouble()))
 
         rStatistics.freeChefssWeight.addMedianPart(freeChefssWeight.getResult())
         rStatistics.freeWaitersWeight.addMedianPart(freeWaitersWeight.getResult())
@@ -225,8 +223,6 @@ class Statistics() {
 
         rStatistics.leavedCustomers += leavedCustomers
         rStatistics.customersSums += customersSums
-
-        rStatistics.averageWaitingTime.addMedianPart(waitingTime / customersFinishEating.toDouble())
 
         averageFreeTimeWaiter.forEach {
             val prev = rStatistics.averageFreeTimeWaiter[it.key]
@@ -249,13 +245,14 @@ class Statistics() {
     }
 
     private fun clearNumbs() {
-        averageWaitingForService = 0.0
-        averageWaitingForMeal = 0.0
-        averageWaitingForPay = 0.0
         leavedCustomers = 0
         customersSums = 0
         customersFinishEating = 0
-        waitingTime = 0.0
+
+        waitingTimeAll = 0.0
+        waitingTimeMeal = 0.0
+        waitingTimePay = 0.0
+        waitingTimeService = 0.0
 
         averageFreeTimeWaiter.clear()
         averageFreeTimeChef.clear()

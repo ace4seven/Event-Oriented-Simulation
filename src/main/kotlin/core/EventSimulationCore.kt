@@ -16,18 +16,81 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
 
     private var skipTime: Double = 1.0
     private var progress: Double = 0.0
+    private var observers = arrayListOf<EventSimulationCoreObserver>()
 
     var isCooling = false
     var isFast = false
     var isTurboMode = false
 
-
-    private var observers = arrayListOf<EventSimulationCoreObserver>()
-
     var cTime: Double = 0.0
         private set
 
     protected var isRunning: Boolean = true
+
+    open fun beforeEvent(core: EventSimulationCore) {}
+    open fun afterEvent(core: EventSimulationCore) {}
+
+    open fun subscribe(controller: EventSimulationCoreObserver) {
+        observers.add(controller)
+    }
+
+    open fun changeSkipTime(time: Double) {
+        skipTime = Math.pow(time, 0.5)
+    }
+
+    open fun getSkipTime(): Double {
+        return skipTime
+    }
+
+    open fun restartCTime() {
+        cTime = 0.0
+    }
+
+    open fun planEvent(event: Event) {
+        if (event.time < cTime) {
+            throw Exception("Porušená časová kauzalita")
+        }
+        timeLine.add(event)
+    }
+
+    override fun replication(core: MCSimulationCore) {
+        super.replication(core)
+
+        simulate()
+    }
+
+    override fun afterReplication(core: MCSimulationCore) {
+        super.afterReplication(core)
+
+        timeLine.clear()
+        if (isFast && !isTurboMode) {
+            if (currentReplication.toDouble() / replication.toDouble() >= 0.1 && canUpdateGui()) {
+                updateGUI()
+            }
+        }
+    }
+
+    override fun clear() {
+        cTime = 0.0
+        timeLine.clear()
+    }
+
+    override fun beforeSimulation(core: MCSimulationCore) {
+        planEvent(SystemEvent(cTime))
+    }
+
+    override fun afterSimulation(core: MCSimulationCore) {
+        updateGUI()
+    }
+
+    private fun canUpdateGui():Boolean {
+        if (replication < 4000) {
+            return true
+        }
+        val factor = replication / 4000
+
+        return currentReplication.toLong() % factor == 0.toLong()
+    }
 
     private fun simulate() {
         while (timeLine.size > 0 && ((cTime <= maxTime) || isCooling)) {
@@ -37,8 +100,6 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
             }
 
             val cEvent = timeLine.poll()
-
-//            if (C.DEBUG) { cEvent.debugPrint() }
 
             cTime = cEvent.time
 
@@ -86,66 +147,5 @@ abstract class EventSimulationCore(var maxTime: Double, replications: Long): MCS
         }
         Thread.sleep(1)
     }
-
-    open fun subscribe(controller: EventSimulationCoreObserver) {
-        observers.add(controller)
-    }
-
-    open fun changeSkipTime(time: Double) {
-        skipTime = Math.pow(time, 0.5)
-    }
-
-    open fun getSkipTime(): Double {
-        return skipTime
-    }
-
-    open fun restartCTime() {
-        cTime = 0.0
-    }
-
-    open fun planEvent(event: Event) {
-        if (event.time < cTime) {
-            throw Exception("Porušená časová kauzalita")
-        }
-        timeLine.add(event)
-    }
-
-    override fun replication(core: MCSimulationCore) {
-        simulate()
-    }
-
-    override fun afterReplication(core: MCSimulationCore) {
-        timeLine.clear()
-
-        if (isFast && !isTurboMode) {
-            if (currentReplication.toDouble() / replication.toDouble() >= 0.1 && canUpdateGui()) {
-                updateGUI()
-            }
-        }
-    }
-
-    override fun clear() {
-        cTime = 0.0
-        timeLine.clear()
-    }
-
-    override fun beforeSimulation(core: MCSimulationCore) {
-        planEvent(SystemEvent(cTime))
-    }
-
-    override fun afterSimulation(core: MCSimulationCore) {
-        updateGUI()
-    }
-
-    private fun canUpdateGui():Boolean {
-        if (replication < 4000) {
-            return true
-        }
-        val factor = replication / 4000
-
-        return currentReplication.toLong() % factor == 0.toLong()
-    }
-
-    open fun afterEvent(core: EventSimulationCore) {}
 
 }

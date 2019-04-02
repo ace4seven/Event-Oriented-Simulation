@@ -15,7 +15,6 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
 
         if (customerGroup.averageWaiting.canStopTrack) {
             customerGroup.averageWaiting.stopTrack(time, WaitType.FORMEAL)
-            rCore.stats.increaseAverage(customerGroup.averageWaiting.getResult(WaitType.FORMEAL), customerGroup.type.count())
         }
 
         customerGroup.table().setStatus("Skupina ${customerGroup.getID()} - jedia")

@@ -113,17 +113,6 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
         customerGroupID = 1
     }
 
-    override fun clear() {
-        super.clear()
-
-        stats.reset()
-
-        customerGroupID = 1
-        initializePersonal()
-        emptyQueues()
-        tableManager.reset()
-    }
-
     private fun initializePersonal() {
         freeWaiters.clear()
         freeChefs.clear()
