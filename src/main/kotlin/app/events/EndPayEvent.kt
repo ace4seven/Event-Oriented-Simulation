@@ -30,17 +30,17 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
         when (customerGroup.table().type) {
             TableType.TWO -> {
                 if (canTrackWeights) {
-                    rCore.stats.freeTableTwoWeight.addValue(time, rCore.tableManager.twoTablesQueue.size())
+                    rCore.stats.freeTableTwoWeight.addValue(time, rCore.tableManager.twoTablesQueue.size() - 1)
                 }
             }
             TableType.FOUR -> {
                 if (canTrackWeights) {
-                    rCore.stats.freeTableFourWeight.addValue(time, rCore.tableManager.fourTablesQueue.size())
+                    rCore.stats.freeTableFourWeight.addValue(time, rCore.tableManager.fourTablesQueue.size() - 1)
                 }
             }
             TableType.SIX -> {
                 if (canTrackWeights) {
-                    rCore.stats.freeTableSixWeight.addValue(time, rCore.tableManager.sixTablesQueue.size())
+                    rCore.stats.freeTableSixWeight.addValue(time, rCore.tableManager.sixTablesQueue.size() - 1)
                 }
             }
         }

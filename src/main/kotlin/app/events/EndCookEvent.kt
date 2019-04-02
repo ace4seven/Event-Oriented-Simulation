@@ -14,11 +14,11 @@ class EndCookEvent(override val time: Double, val chef: Chef, val order: Order):
 
         chef.stopWorking(time)
 
-        rCore.freeChefs.add(chef)
-        rCore.stats.averageFreeTimeChef[chef.getID()] = chef.getWorkingTime()
         if (canTrackWeights) {
             rCore.stats.freeChefssWeight.addValue(time, rCore.freeChefs.size)
         }
+        rCore.freeChefs.add(chef)
+        rCore.stats.averageFreeTimeChef[chef.getID()] = chef.getWorkingTime()
 
         order.customerGroup.incMeals()
 
@@ -28,18 +28,18 @@ class EndCookEvent(override val time: Double, val chef: Chef, val order: Order):
             rCore.fifoFinishMeal.add(order.customerGroup)
             if (rCore.freeWaiters.size > 0) {
                 val group = rCore.fifoFinishMeal.pop()!!
-                rCore.planEvent(BeginTransportMealEvent(time, group, rCore.freeWaiters.poll()))
                 if (canTrackWeights) {
                     rCore.stats.freeChefssWeight.addValue(time, rCore.freeWaiters.size)
                 }
+                rCore.planEvent(BeginTransportMealEvent(time, group, rCore.freeWaiters.poll()))
             }
         }
 
         if (rCore.fifoOrder.size() > 0) {
-            rCore.planEvent(BeginCookEvent(time, rCore.fifoOrder.pop()!!, rCore.freeChefs.poll()))
             if (canTrackWeights) {
                 rCore.stats.freeChefssWeight.addValue(time, rCore.freeChefs.size)
             }
+            rCore.planEvent(BeginCookEvent(time, rCore.fifoOrder.pop()!!, rCore.freeChefs.poll()))
         }
     }
 

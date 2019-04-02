@@ -24,15 +24,15 @@ class GlobalStatistics {
                 makeStatEntry(
                         "Priemerný čas čakania",
                         formatStatisticWaitingTime(stats.getAverageWaitingTime())),
-//                makeStatEntry(
-//                        "Priemerný čas čakania - obsluha",
-//                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE))),
-//                makeStatEntry(
-//                        "Priemerný čas čakania - jedlo",
-//                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL))),
-//                makeStatEntry (
-//                        "Priemerný čas čakania - platba",
-//                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.PAY))),
+                makeStatEntry(
+                        "Priemerný čas čakania - obsluha",
+                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE))),
+                makeStatEntry(
+                        "Priemerný čas čakania - jedlo",
+                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL))),
+                makeStatEntry (
+                        "Priemerný čas čakania - platba",
+                        formatStatistic(stats.getAverageTimeCustomerWait(AverageWaitingType.PAY))),
                 makeStatEntry(
                         "Priemerný počet príchodov za deň",
                         "${customersArrival.first}"),
@@ -60,9 +60,25 @@ class GlobalStatistics {
         ))
 
         val cRep = stats.getAverageWorkingTimes().third
+        val wTimes = stats.getAverageWorkingTimes()
+
+        var waiterWaiting = 0.0
+        var chefWaiting = 0.0
+
+        stats.getAverageWorkingTimes().first.forEach {
+            waiterWaiting += (it.value / cRep)
+        }
+
+        entries.add(makeStatEntry("Čašníci majú priemerne voľno: ", "${waiterWaiting / wTimes.first.size * 100} %"))
+
+        stats.getAverageWorkingTimes().second.forEach {
+            chefWaiting += (it.value / cRep)
+        }
         stats.getAverageWorkingTimes().first.forEach {
             entries.add(makeStatEntry("Čašník ${it.key} ma v priemere voľno: ", "${it.value / cRep * 100} %"))
         }
+
+        entries.add(makeStatEntry("Kuchári majú priemerne voľno: ", "${chefWaiting / wTimes.second.size * 100} %"))
 
         stats.getAverageWorkingTimes().second.forEach {
             entries.add(makeStatEntry("Kuchár ${it.key} ma v priemere voľno: ", "${it.value / cRep * 100} %"))

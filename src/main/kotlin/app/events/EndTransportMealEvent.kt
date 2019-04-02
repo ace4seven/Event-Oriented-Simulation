@@ -22,7 +22,7 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
         waiter.stopWorking(time)
         rCore.freeWaiters.add(waiter)
         if (canTrackWeights) {
-            rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
+            rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size - 1)
         }
         rCore.stats.averageFreeTimeWaiter[waiter.getID()] = waiter.getWorkingTime()
 
@@ -36,22 +36,22 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
 
         if (rCore.fifoService.size() > 0) {
             val group = rCore.fifoService.pop()!!
-            rCore.planEvent(BeginOrderEvent(time, group, rCore.freeWaiters.poll()))
             if (canTrackWeights) {
                 rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
             }
+            rCore.planEvent(BeginOrderEvent(time, group, rCore.freeWaiters.poll()))
         } else if (rCore.fifoFinishMeal.size() > 0) {
             val meal = rCore.fifoFinishMeal.pop()!!
-            rCore.planEvent(BeginTransportMealEvent(time, meal,  rCore.freeWaiters.poll()))
             if (canTrackWeights) {
                 rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
             }
+            rCore.planEvent(BeginTransportMealEvent(time, meal,  rCore.freeWaiters.poll()))
         } else if (rCore.fifoPayment.size() > 0) {
             val group = rCore.fifoPayment.pop()!!
-            rCore.planEvent(BeginPayEvent(time, group, rCore.freeWaiters.poll()))
             if (canTrackWeights) {
                 rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
             }
+            rCore.planEvent(BeginPayEvent(time, group, rCore.freeWaiters.poll()))
         }
 
         rCore.planEvent(EndEatingEvent(time + finishEatingTime, customerGroup))

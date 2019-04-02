@@ -41,13 +41,13 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
             if (!simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime) {
                 when (freeTable.type) {
                     TableType.TWO -> {
-                        rCore.stats.freeTableTwoWeight.addValue(time, rCore.tableManager.twoTablesQueue.size())
+                        rCore.stats.freeTableTwoWeight.addValue(time, rCore.tableManager.twoTablesQueue.size() + 1)
                     }
                     TableType.FOUR -> {
-                        rCore.stats.freeTableFourWeight.addValue(time, rCore.tableManager.fourTablesQueue.size())
+                        rCore.stats.freeTableFourWeight.addValue(time, rCore.tableManager.fourTablesQueue.size() + 1)
                     }
                     TableType.SIX -> {
-                        rCore.stats.freeTableSixWeight.addValue(time, rCore.tableManager.sixTablesQueue.size())
+                        rCore.stats.freeTableSixWeight.addValue(time, rCore.tableManager.sixTablesQueue.size() + 1)
                     }
                 }
             }
@@ -55,12 +55,10 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
             customerGroup.addTable(freeTable)
             freeTable.setStatus("Prisla skupina ${customerGroup.type.count()}")
             if (rCore.freeWaiters.size > 0) {
-                val waiter = rCore.freeWaiters.poll()
-
                 if (!simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime) {
                     rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)
                 }
-
+                val waiter = rCore.freeWaiters.poll()
                 C.message("     !!!TABLE STATUS ${rCore.tableManager.getTablesStatus()}")
                 rCore.planEvent(BeginOrderEvent(time, customerGroup, waiter))
             } else {

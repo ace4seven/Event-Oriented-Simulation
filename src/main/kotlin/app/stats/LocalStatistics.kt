@@ -23,15 +23,15 @@ class LocalStatistics {
                 makeStatEntry(
                         "Priemerný čas čakania",
                         "${stats.waitingTimeAll / stats.customersFinishEating.toDouble()}"),
-//                makeStatEntry(
-//                        "Priemerný čas čakania - obsluha",
-//                        "${stats.getTimeCustomersWait(AverageWaitingType.SERVICE)}"),
-//                makeStatEntry(
-//                        "Priemerný čas čakania - jedlo",
-//                        "${stats.getTimeCustomersWait(AverageWaitingType.MEAL)}"),
-//                makeStatEntry (
-//                        "Priemerný čas čakania - platba",
-//                        "${stats.getTimeCustomersWait(AverageWaitingType.PAY)}"),
+                makeStatEntry(
+                        "Priemerný čas čakania - obsluha",
+                        "${stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE)}"),
+                makeStatEntry(
+                        "Priemerný čas čakania - jedlo",
+                        "${stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL)}"),
+                makeStatEntry (
+                        "Priemerný čas čakania - platba",
+                        "${stats.getAverageTimeCustomerWait(AverageWaitingType.PAY)}"),
                 makeStatEntry(
                         "Počet príchodov",
                         "${stats.customersSums}"),

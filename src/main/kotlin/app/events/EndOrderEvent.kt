@@ -53,12 +53,13 @@ class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup,
         customerGroup.averageWaiting.startTrack(time, WaitType.FORMEAL)
         if (rCore.freeChefs.size > 0) {
             val cookEventsSum = min(rCore.freeChefs.size, rCore.fifoOrder.size())
-            for (i in 1..cookEventsSum) {
-                rCore.planEvent(BeginCookEvent(time, rCore.fifoOrder.pop()!!, rCore.freeChefs.poll()))
-            }
 
             if (canTrackWeights) {
                 rCore.stats.freeChefssWeight.addValue(time, rCore.freeChefs.size)
+            }
+
+            for (i in 1..cookEventsSum) {
+                rCore.planEvent(BeginCookEvent(time, rCore.fifoOrder.pop()!!, rCore.freeChefs.poll()))
             }
         }
     }
