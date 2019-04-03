@@ -1,5 +1,6 @@
 package app.view
 
+import javafx.scene.chart.CategoryAxis
 import javafx.scene.chart.NumberAxis
 import tornadofx.*
 
@@ -37,22 +38,21 @@ class ChefDependenyView : AppView("Závislosti kuchár") {
             }
         }
 
-        linechart("Závislosti čašníkov", NumberAxis(), NumberAxis()) {
-            createSymbols = false
+        barchart("Závislosti čašníkov", CategoryAxis(), NumberAxis()) {
+//            createSymbols = false
             isLegendVisible = false
             prefHeight = 400.0
             maxHeight = 600.0
             minWidth = 900.0
             animated = false
-            series("", controller.chefDependencyChartData)
+            series("Lorem ipsum", controller.chefDependencyChartData)
             with(yAxis as NumberAxis) {
                 label = "Priemerné čakanie [sec]"
                 isForceZeroInRange = false
                 isAutoRanging = true
             }
-            with(xAxis as NumberAxis) {
+            with(xAxis as CategoryAxis) {
                 xAxis.label = "Počet čašníkov"
-                isForceZeroInRange = false
                 isAutoRanging = true
             }
         }

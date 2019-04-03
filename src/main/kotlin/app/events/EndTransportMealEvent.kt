@@ -5,7 +5,7 @@ import app.model.Waiter
 import app.stats.WaitType
 import core.Event
 import core.EventSimulationCore
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 
 class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val customerGroup: CustomerGroup): Event() {
 
@@ -17,7 +17,7 @@ class EndTransportMealEvent(override val time: Double, val waiter: Waiter, val c
             customerGroup.averageWaiting.stopTrack(time, WaitType.FORMEAL)
         }
 
-        customerGroup.table().setStatus("Skupina ${customerGroup.getID()} - jedia")
+        customerGroup.table().status = "Skupina ${customerGroup.getID()} - jedia"
 
         waiter.stopWorking(time)
         rCore.freeWaiters.add(waiter)

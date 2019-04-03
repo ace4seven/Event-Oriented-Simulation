@@ -1,7 +1,7 @@
 package app.stats
 
 import app.model.*
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 import core.SystemEvent
 import support.RestaurantTable
 

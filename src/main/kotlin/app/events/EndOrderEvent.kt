@@ -6,7 +6,7 @@ import app.model.Waiter
 import app.stats.WaitType
 import core.Event
 import core.EventSimulationCore
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 import kotlin.math.min
 
 class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup, val waiter: Waiter): Event() {
@@ -14,7 +14,7 @@ class EndOrderEvent(override val time: Double, val customerGroup: CustomerGroup,
     override fun execute(simulationCore: EventSimulationCore) {
         val canTrackWeights = !simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime
 
-        customerGroup.table().setStatus("Skupina ${customerGroup.getID()} čaka na jedlo")
+        customerGroup.table().status = "Skupina ${customerGroup.getID()} čaka na jedlo"
 
         val rCore = simulationCore as RestaurantSimulationCore
 

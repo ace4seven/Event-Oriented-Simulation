@@ -25,12 +25,7 @@ enum class TableType {
 
 data class RestaurantTable(val id: Int, val type: TableType) {
 
-    var status: String  = "Voľný"
-        private set
-
-    fun setStatus(value: String) {
-        this.status = value
-    }
+    var status: String = "Volny"
 
 }
 

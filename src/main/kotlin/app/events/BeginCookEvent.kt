@@ -4,18 +4,19 @@ import app.model.Chef
 import app.model.Order
 import core.Event
 import core.EventSimulationCore
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 
 class BeginCookEvent(override val time: Double, val meal: Order, val chef: Chef): Event() {
 
     override fun execute(simulationCore: EventSimulationCore) {
         val rCore = simulationCore as RestaurantSimulationCore
 
-        val endCooktime = time + meal.orderSession.duration
+        val cookingDuration = time + meal.orderSession.duration
 
-        chef.startWorking(time, endCooktime)
+        chef.startWorking(time, cookingDuration)
+
         chef.addStatus("Varí ${meal.orderSession.foodType.foodName()} pre ${meal.customerGroup.getID()}")
-        rCore.planEvent(EndCookEvent(endCooktime, chef, meal))
+        rCore.planEvent(EndCookEvent(cookingDuration, chef, meal))
     }
 
     override fun debugPrint() {

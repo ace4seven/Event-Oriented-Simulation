@@ -5,7 +5,7 @@ import app.model.Waiter
 import app.stats.WaitType
 import core.Event
 import core.EventSimulationCore
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 
 class BeginPayEvent(override val time: Double, val customerGroup: CustomerGroup, val waiter: Waiter): Event() {
 
@@ -20,7 +20,7 @@ class BeginPayEvent(override val time: Double, val customerGroup: CustomerGroup,
         waiter.startWorking(time, endPayment)
         waiter.addStatus("Platenie skupina ${customerGroup.getID()}")
 
-        customerGroup.table().setStatus("Skupina ${customerGroup.getID()} platí")
+        customerGroup.table().status = "Skupina ${customerGroup.getID()} platí"
 
         rCore.planEvent(EndPayEvent(endPayment, waiter, customerGroup))
     }

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dis_sem2_juraj_macak.iml" filepath="$PROJECT_DIR$/.idea/modules/dis_sem2_juraj_macak.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dis_sem2_juraj_macak.iml" filepath="$PROJECT_DIR$/dis_sem2_juraj_macak.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/dis_sem2_juraj_macak_main.iml" filepath="$PROJECT_DIR$/.idea/modules/dis_sem2_juraj_macak_main.iml" group="dis_sem2_juraj_macak" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/dis_sem2_juraj_macak_test.iml" filepath="$PROJECT_DIR$/.idea/modules/dis_sem2_juraj_macak_test.iml" group="dis_sem2_juraj_macak" />
     </modules>

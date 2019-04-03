@@ -11,8 +11,6 @@ class LocalStatistics {
 
     fun update(stats: Statistics, currentTime: Double) {
         entries.clear()
-
-        val customersArrival = stats.getAverageArrivalStats()
         entries.addAll(listOf(
                 makeStatEntry(
                         "Aktuálna replikácia",
@@ -23,15 +21,6 @@ class LocalStatistics {
                 makeStatEntry(
                         "Priemerný čas čakania",
                         "${stats.waitingTimeAll / stats.customersFinishEating.toDouble()}"),
-                makeStatEntry(
-                        "Priemerný čas čakania - obsluha",
-                        "${stats.getAverageTimeCustomerWait(AverageWaitingType.SERVICE)}"),
-                makeStatEntry(
-                        "Priemerný čas čakania - jedlo",
-                        "${stats.getAverageTimeCustomerWait(AverageWaitingType.MEAL)}"),
-                makeStatEntry (
-                        "Priemerný čas čakania - platba",
-                        "${stats.getAverageTimeCustomerWait(AverageWaitingType.PAY)}"),
                 makeStatEntry(
                         "Počet príchodov",
                         "${stats.customersSums}"),

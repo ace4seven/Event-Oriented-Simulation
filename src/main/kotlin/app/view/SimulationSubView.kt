@@ -15,11 +15,6 @@ import tornadofx.Stylesheet.Companion.tab
 
 open class SimulationSubView : AppView("Simulácia") {
 
-    var normalCheckBox = CheckBox()
-    var fastCheckBox = CheckBox()
-    var coolCheckBox = CheckBox()
-    var turboCheckBox = CheckBox()
-
     override val root = vbox {
         prefWidth = 1500.0
         prefHeight = 1000.0
@@ -60,7 +55,7 @@ open class SimulationSubView : AppView("Simulácia") {
                                 text = "15"
                             }
                         }
-                        field("Replikácia = dni") {
+                        field("Počet dní replikácie") {
                             textfield {
                                 bind(controller.numberOfDaysProperty)
 
@@ -119,7 +114,6 @@ open class SimulationSubView : AppView("Simulácia") {
                             }
                             action {
                                 start()
-                                controller.startSimulationAction()
                             }
                         }
 
@@ -185,7 +179,7 @@ open class SimulationSubView : AppView("Simulácia") {
                             minorTickCount = 10
                             isSnapToTicks = true
 
-                            valueProperty().addListener { observable, oldValue, newValue ->
+                            valueProperty().addListener { _, oldValue, newValue ->
                                 if (oldValue.toInt() != newValue.toInt()) {
                                     controller.changeSkipSpeed(newValue.toDouble())
                                 }

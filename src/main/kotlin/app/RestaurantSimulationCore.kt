@@ -1,8 +1,10 @@
-package core
+package app
 
 import app.events.ArrivalGroupEvent
 import app.model.*
 import app.stats.*
+import core.EventSimulationCore
+import core.MCSimulationCore
 import core.generators.CEvenGenerator
 import core.generators.ExponencialGenerator
 import core.generators.TriangleGenerator
@@ -10,7 +12,6 @@ import support.FoodManager
 import support.Queue
 import support.TableManager
 import java.util.*
-import kotlin.math.max
 
 class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int, time: Double, replications: Long): EventSimulationCore(time, replications) {
 
@@ -55,12 +56,12 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
     var isPaused = false
         private set
 
-    open fun resume() {
+    fun resume() {
         isRunning = !isRunning
         isPaused =  !isPaused
     }
 
-    open fun pause() {
+    fun pause() {
         isRunning = !isRunning
         isPaused =  !isPaused
     }
@@ -104,6 +105,8 @@ class RestaurantSimulationCore(var numberOfWaiters: Int, var numberOfChefs: Int,
         if (isFast) {
             globalStatistics.update(stats)
         }
+
+
         initializePersonal()
         prepareForSimulation()
         emptyQueues()

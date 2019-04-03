@@ -38,7 +38,7 @@ dependencies {
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 }
 
-mainClassName = "app/MyApp"
+mainClassName = "app.AppStarter"
 
 jar {
     manifest {

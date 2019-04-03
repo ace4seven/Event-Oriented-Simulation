@@ -4,7 +4,7 @@ import app.model.CustomerGroupType
 import app.stats.WaitType
 import core.Event
 import core.EventSimulationCore
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 import support.TableType
 
 class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGroup): Event() {
@@ -53,7 +53,7 @@ class ArrivalGroupEvent(override val time: Double, val customerGroup: CustomerGr
             }
 
             customerGroup.addTable(freeTable)
-            freeTable.setStatus("Prisla skupina ${customerGroup.type.count()}")
+            freeTable.status = "Prisla skupina ${customerGroup.type.count()}"
             if (rCore.freeWaiters.size > 0) {
                 if (!simulationCore.isCooling || simulationCore.cTime < simulationCore.maxTime) {
                     rCore.stats.freeWaitersWeight.addValue(time, rCore.freeWaiters.size)

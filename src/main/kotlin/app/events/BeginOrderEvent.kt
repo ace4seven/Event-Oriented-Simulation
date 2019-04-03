@@ -5,7 +5,7 @@ import app.model.Waiter
 import app.stats.WaitType
 import core.Event
 import core.EventSimulationCore
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 
 class BeginOrderEvent(override val time: Double, val customerGroup: CustomerGroup, val waiter: Waiter): Event() {
 
@@ -20,7 +20,7 @@ class BeginOrderEvent(override val time: Double, val customerGroup: CustomerGrou
         waiter.startWorking(time, endOrderTime)
         waiter.addStatus("Objednava pri ${customerGroup.getID()}")
 
-        customerGroup.table().setStatus("Skupina ${customerGroup.getID()} objednáva")
+        customerGroup.table().status ="Skupina ${customerGroup.getID()} objednáva"
 
         rCore.planEvent(EndOrderEvent(endOrderTime, customerGroup, waiter))
     }

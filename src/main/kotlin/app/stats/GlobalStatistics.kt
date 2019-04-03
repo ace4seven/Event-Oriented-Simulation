@@ -94,21 +94,15 @@ class GlobalStatistics {
     }
 
     private fun formatStatistic(data: Triple<Double?, Double, Double?>): String {
-        return "${data.second} " +
-                " - IS: <${if (data.first != null) data.first!! else "NO_DATA"}, " +
-                "${if (data.third != null) data.third!! else "NO_DATA"}>"
+        return "${data.second} | ± ${if (data.first != null) data.second - data.first!! else "NO_DATA"}"
     }
 
     private fun formatStatisticWaitingTime(data: ConfidenceInterval): String {
-        return "${data.median()} " +
-                " - IS: <${if (data.ISLeft() != null) data.ISLeft()!! else "NO_DATA"}, " +
-                "${if (data.ISRight() != null) data.ISRight()!! else "NO_DATA"}>"
+        return "${data.median()} | ± ${if (data.ISLeft() != null) data.median() - data.ISLeft()!! else "NO_DATA"}"
     }
 
     private fun formatStatistic(data: ConfidenceInterval): String {
-        return "${data.median() * 100} %" +
-                " - IS: <${if (data.ISLeft() != null) data.ISLeft()!! * 100 else "NO_DATA"}, " +
-                "${if (data.ISRight() != null) data.ISRight()!! * 100 else "NO_DATA"}>"
+        return "${data.median() * 100} % | ± ${if (data.ISLeft() != null) (data.median() - data.ISLeft()!!) * 100 else "NO_DATA"}"
     }
 
     private fun formatStatisticWithTime(data: ConfidenceInterval): String {

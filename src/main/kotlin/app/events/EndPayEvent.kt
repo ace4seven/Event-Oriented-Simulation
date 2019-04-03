@@ -4,7 +4,7 @@ import app.model.CustomerGroup
 import app.model.Waiter
 import core.Event
 import core.EventSimulationCore
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 import support.TableType
 
 class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGroup: CustomerGroup): Event() {
@@ -25,7 +25,7 @@ class EndPayEvent(override val time: Double, val waiter: Waiter, val customerGro
         rCore.stats.averageFreeTimeWaiter[waiter.getID()] = waiter.getWorkingTime()
 
         rCore.tableManager.freeTable(customerGroup.table())
-        customerGroup.table().setStatus("Voľný stôl")
+        customerGroup.table().status = "Voľný stôl"
 
         when (customerGroup.table().type) {
             TableType.TWO -> {

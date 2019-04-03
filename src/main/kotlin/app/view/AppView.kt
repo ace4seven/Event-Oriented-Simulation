@@ -4,10 +4,7 @@ import app.controller.AppController
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
-import javafx.scene.control.Button
-import javafx.scene.control.Label
-import javafx.scene.control.ProgressBar
-import javafx.scene.control.TextField
+import javafx.scene.control.*
 import tornadofx.*
 
 abstract class AppView(title: String) : View(title) {
@@ -47,6 +44,12 @@ abstract class AppView(title: String) : View(title) {
     protected var pauseButton: Button by singleAssign()
     protected var stopButton: Button by singleAssign()
     protected var stateButton: Button by singleAssign()
+    protected var statePauseButton: Button by singleAssign()
+
+    protected var normalCheckBox = CheckBox()
+    protected var fastCheckBox = CheckBox()
+    protected var coolCheckBox = CheckBox()
+    protected var turboCheckBox = CheckBox()
 
     protected var simulationProgressBar: ProgressBar by singleAssign()
 
@@ -58,12 +61,18 @@ abstract class AppView(title: String) : View(title) {
     }
 
     protected fun start() {
+        if (replicationTextField.text.toInt() > 1 && normalCheckBox.isSelected) {
+            alertReplicationMode()
+            return
+        }
+
         startButton.isDisable = true
         pauseButton.isDisable = false
         stopButton.isDisable = true
 
         stateButton.isDisable = replicationTextField.text.toInt() > 1
 
+        controller.startSimulationAction()
     }
 
     protected fun stop() {
@@ -106,6 +115,10 @@ abstract class AppView(title: String) : View(title) {
         startButton.isDisable = false
         pauseButton.isDisable = true
         stopButton.isDisable = false
+    }
+
+    private fun alertReplicationMode() {
+        alert(Alert.AlertType.WARNING, "POZOR!!!", "Normálny režim umožnuje snímkovanie a je potrebné mať nastavenú IBA 1 replikáciu")
     }
 
 }

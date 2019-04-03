@@ -1,6 +1,7 @@
 package app.view
 
 import app.model.*
+import javafx.scene.control.Alert
 import javafx.scene.text.FontWeight
 import tornadofx.*
 
@@ -26,7 +27,7 @@ class StateObjectView : AppView("Stav objektov") {
                         bind(controller.simulationTimeProperty)
                     }
 
-                    button("Pauza simulácie") {
+                    statePauseButton = button("Pauza simulácie") {
                         minWidth = 150.0
                         hboxConstraints {
                             marginTop = 10.0

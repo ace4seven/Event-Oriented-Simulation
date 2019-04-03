@@ -2,10 +2,9 @@ package app.events
 
 import app.model.CustomerGroup
 import app.model.Waiter
-import app.stats.WaitType
 import core.Event
 import core.EventSimulationCore
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 
 class BeginTransportMealEvent(override val time: Double, val meal: CustomerGroup, val waiter: Waiter): Event() {
 

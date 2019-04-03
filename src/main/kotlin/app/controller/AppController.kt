@@ -3,7 +3,7 @@ package app.controller
 import app.model.*
 import core.EventSimulationCore
 import core.EventSimulationCoreObserver
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
@@ -59,7 +59,7 @@ class AppController: Controller(), EventSimulationCoreObserver {
     val waiterDependencyHighProperty = SimpleIntegerProperty()
     val waiterDependencyHigh:Int  by waiterDependencyHighProperty
 
-    var waiterDependencyChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
+    var waiterDependencyChartData = FXCollections.observableArrayList<XYChart.Data<String, Number>>()
 
     val chefDependencyReplicationProperty = SimpleIntegerProperty()
     var chefDependencyReplication: Int by chefDependencyReplicationProperty
@@ -73,7 +73,7 @@ class AppController: Controller(), EventSimulationCoreObserver {
     val chefDependencyHighProperty = SimpleIntegerProperty()
     val chefDependencyHigh:Int  by chefDependencyHighProperty
 
-    var chefDependencyChartData = FXCollections.observableArrayList<XYChart.Data<Number, Number>>()
+    var chefDependencyChartData = FXCollections.observableArrayList<XYChart.Data<String, Number>>()
 
     // TABLES
     var mainStatsDataSource= FXCollections.observableArrayList<StatEntry>()
@@ -156,7 +156,7 @@ class AppController: Controller(), EventSimulationCoreObserver {
     }
 
     fun stopSimulationAction() {
-        restaurantCore = RestaurantSimulationCore(numberOfWaiters, numberOfChefs, (if(numberOfDays == 0) 1 else(numberOfDays) * 32400).toDouble(), numberOfReplications.toLong())
+        restaurantCore = RestaurantSimulationCore(numberOfWaiters, numberOfChefs, (if (numberOfDays == 0) 1 else (numberOfDays) * 32400).toDouble(), numberOfReplications.toLong())
         restaurantCore.subscribe(this)
 
         setupCore()
@@ -179,11 +179,18 @@ class AppController: Controller(), EventSimulationCoreObserver {
     override fun refresh(core: EventSimulationCore) {
         if (isWaiterDependencySimulate) {
             val rCore = core as RestaurantSimulationCore
-            waiterDependencyChartData.add(XYChart.Data(core.numberOfChefs, rCore.stats.getAverageWaitingTime().median()))
+            waiterDependencyChartData.add(XYChart.Data("Kuchári: ${core.numberOfChefs}: (${rCore.stats.getAverageWaitingTime().median()})", rCore.stats.getAverageWaitingTime().median()))
+
+            waiterDependencyChartData.sortBy {
+                it.yValue.toDouble()
+            }
             return
         } else if (isChefDependencySimulate) {
             val rCore = core as RestaurantSimulationCore
-            chefDependencyChartData.add(XYChart.Data(core.numberOfWaiters, rCore.stats.getAverageWaitingTime().median()))
+            chefDependencyChartData.add(XYChart.Data("Čašníci: ${core.numberOfWaiters}: (${rCore.stats.getAverageWaitingTime().median()})", rCore.stats.getAverageWaitingTime().median()))
+            chefDependencyChartData.sortBy {
+                it.yValue.toDouble()
+            }
             return
         }
 

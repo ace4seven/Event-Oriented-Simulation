@@ -1,6 +1,6 @@
 package app.test
 
-import core.RestaurantSimulationCore
+import app.RestaurantSimulationCore
 import core.generators.TriangleGenerator
 
 fun main(args: Array<String>) {
