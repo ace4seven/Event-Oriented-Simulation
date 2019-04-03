@@ -45,6 +45,8 @@ abstract class AppView(title: String) : View(title) {
     protected var stopButton: Button by singleAssign()
     protected var stateButton: Button by singleAssign()
     protected var statePauseButton: Button by singleAssign()
+    protected var exportFromChefButton: Button by singleAssign()
+    protected var exportFromWaiterButton: Button by singleAssign()
 
     protected var normalCheckBox = CheckBox()
     protected var fastCheckBox = CheckBox()
@@ -119,6 +121,10 @@ abstract class AppView(title: String) : View(title) {
 
     private fun alertReplicationMode() {
         alert(Alert.AlertType.WARNING, "POZOR!!!", "Normálny režim umožnuje snímkovanie a je potrebné mať nastavenú IBA 1 replikáciu")
+    }
+
+    protected fun startExport() {
+        alert(Alert.AlertType.INFORMATION, "Export začal", "Váš súbor CSV sa začal generovať a nájdete ho v root priečinka s aplikáciou")
     }
 
 }

@@ -66,14 +66,29 @@ class WaiterDependencyView : AppView("Závislosti čašník") {
             }
         }
 
-        button("Spustiť ") {
-            minWidth = 150.0
-            vboxConstraints {
-                marginTop = 50.0
-                marginLeft = 20.0
+        hbox {
+            button("Spustiť ") {
+                minWidth = 150.0
+                hboxConstraints {
+                    marginTop = 50.0
+                    marginLeft = 20.0
+                }
+                action {
+                    controller.startWaiterDependency()
+                }
             }
-            action {
-                controller.startWaiterDependency()
+            button("Export závislostí ") {
+                minWidth = 150.0
+                hboxConstraints {
+                    marginTop = 50.0
+                    marginLeft = 20.0
+                }
+                action {
+                    controller.makeDependencyExport()
+                    startExport()
+
+                    isDisable = true
+                }
             }
         }
     }

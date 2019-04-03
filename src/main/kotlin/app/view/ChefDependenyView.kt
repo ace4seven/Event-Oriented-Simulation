@@ -57,14 +57,29 @@ class ChefDependenyView : AppView("Závislosti kuchár") {
             }
         }
 
-        button("Spustiť ") {
-            minWidth = 150.0
-            vboxConstraints {
-                marginTop = 50.0
-                marginLeft = 20.0
+        hbox {
+            button("Spustiť ") {
+                minWidth = 150.0
+                hboxConstraints {
+                    marginTop = 50.0
+                    marginLeft = 20.0
+                }
+                action {
+                    controller.startChefDependency()
+                }
             }
-            action {
-                controller.startChefDependency()
+            button("Export závislostí ") {
+                minWidth = 150.0
+                hboxConstraints {
+                    marginTop = 50.0
+                    marginLeft = 20.0
+                }
+                action {
+                    controller.makeDependencyExport()
+                    startExport()
+
+                    isDisable = true
+                }
             }
         }
     }

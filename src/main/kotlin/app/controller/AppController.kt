@@ -12,11 +12,15 @@ import javafx.scene.chart.XYChart
 import tornadofx.*
 import app.stats.*
 import javafx.beans.property.SimpleDoubleProperty
+import support.CSVExport
+import support.CSVentry
 import java.lang.IndexOutOfBoundsException
 
 class AppController: Controller(), EventSimulationCoreObserver {
 
     // MARK: - Properties
+
+    private val csvExport = CSVExport("zavislosti.csv")
 
     val simulationTimeProperty = SimpleStringProperty("11 : 00 : 00")
     var simulationTime: String by simulationTimeProperty
@@ -103,6 +107,8 @@ class AppController: Controller(), EventSimulationCoreObserver {
     var isWaiterDependencySimulate = false
     var isChefDependencySimulate = false
 
+    var isExportCSV = false
+
 
     private var restaurantCore = RestaurantSimulationCore(0, 0, 0.0, 0)
 
@@ -124,6 +130,19 @@ class AppController: Controller(), EventSimulationCoreObserver {
         }
     }
 
+    fun makeDependencyExport() {
+        isExportCSV = true
+        for (i in 1..6) {
+            for (j in 10..20) {
+                val simCore = RestaurantSimulationCore(i , j, 32400.0, 700)
+                simCore.subscribe(this)
+                simCore.isTurboMode = true
+                simCore.isFast = true
+                simCore.start()
+            }
+        }
+    }
+
     fun startChefDependency() {
         chefDependencyChartData.clear()
         isWaiterDependencySimulate = false
@@ -141,6 +160,7 @@ class AppController: Controller(), EventSimulationCoreObserver {
     fun startSimulationAction() {
         isWaiterDependencySimulate = false
         isChefDependencySimulate = false
+        isExportCSV = false
 
         if (restaurantCore.isPaused) {
             restaurantCore.isFast = isFastMode
@@ -158,6 +178,8 @@ class AppController: Controller(), EventSimulationCoreObserver {
     fun stopSimulationAction() {
         restaurantCore = RestaurantSimulationCore(numberOfWaiters, numberOfChefs, (if (numberOfDays == 0) 1 else (numberOfDays) * 32400).toDouble(), numberOfReplications.toLong())
         restaurantCore.subscribe(this)
+
+
 
         setupCore()
     }
@@ -177,8 +199,16 @@ class AppController: Controller(), EventSimulationCoreObserver {
     }
 
     override fun refresh(core: EventSimulationCore) {
+        val rCore = core as RestaurantSimulationCore
+        if(isExportCSV) {
+            csvExport.addRow(CSVentry(core.numberOfChefs, core.numberOfWaiters, core.stats.getAverageWaitingTime().median(), core.stats.getAverageArrivalStats().third.median()))
+            if (core.numberOfChefs == 20 && core.numberOfWaiters == 6) {
+                csvExport.generateCSV()
+            }
+            return
+        }
+
         if (isWaiterDependencySimulate) {
-            val rCore = core as RestaurantSimulationCore
             waiterDependencyChartData.add(XYChart.Data("Kuchári: ${core.numberOfChefs}: (${rCore.stats.getAverageWaitingTime().median()})", rCore.stats.getAverageWaitingTime().median()))
 
             waiterDependencyChartData.sortBy {
@@ -186,7 +216,6 @@ class AppController: Controller(), EventSimulationCoreObserver {
             }
             return
         } else if (isChefDependencySimulate) {
-            val rCore = core as RestaurantSimulationCore
             chefDependencyChartData.add(XYChart.Data("Čašníci: ${core.numberOfWaiters}: (${rCore.stats.getAverageWaitingTime().median()})", rCore.stats.getAverageWaitingTime().median()))
             chefDependencyChartData.sortBy {
                 it.yValue.toDouble()
