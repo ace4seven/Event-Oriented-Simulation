@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="dis_sem2_juraj_macak" default="all">
+  
+  
+  <property file="dis_sem2_juraj_macak.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.swc"/>
+    <include name="*.zip"/>
+    <include name="*.egg"/>
+    <include name="*.ane"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+    <include name="*.klib"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/ext/cldrdata.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/jaccess.jar"/>
+      <include name="jre/lib/ext/jfxrt.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/nashorn.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/jfxswt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="lib/ant-javafx.jar"/>
+      <include name="lib/dt.jar"/>
+      <include name="lib/javafx-mx.jar"/>
+      <include name="lib/jconsole.jar"/>
+      <include name="lib/packager.jar"/>
+      <include name="lib/sa-jdi.jar"/>
+      <include name="lib/tools.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.gradle:_javax.json:javax.json-api:1.1.2.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/javax.json/javax.json-api/1.1.2/b38c52a6e180359108bd5e35dbeec7d1be45c535/javax.json-api-1.1.2.jar"/>
+  </path>
+  
+  <path id="library.gradle:_no.tornado:tornadofx:1.7.17.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/no.tornado/tornadofx/1.7.17/680562b988010420f3a97cda69fe4e6aacfef320/tornadofx-1.7.17.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.apiguardian:apiguardian-api:1.0.0.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.apiguardian/apiguardian-api/1.0.0/3ef5276905e36f4d8055fe3cb0bdcc7503ffc85d/apiguardian-api-1.0.0.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.glassfish:javax.json:1.1.2.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.glassfish/javax.json/1.1.2/a507518970d55e9de24665af06d70aae91b4aaa1/javax.json-1.1.2.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.jetbrains.kotlin:kotlin-reflect:1.2.60.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.2.60/33af8b35817e4c97a477a6a324032e0591d04f36/kotlin-reflect-1.2.60.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.2.60/d95e6419da840e672342e5d4348f0bdd1d58b84d/kotlin-stdlib-common-1.2.60.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.2.60/31f1ea280ab4942ed25f91760d7170c41f78d06f/kotlin-stdlib-jdk7-1.2.60.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.2.60/7d5d50242f2bd1bcb6663044fbc814e0f59255aa/kotlin-stdlib-jdk8-1.2.60.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib:1.2.60.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.2.60/391695759d8fc80042c2c11bc19fc6f2787be495/kotlin-stdlib-1.2.60.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.jetbrains:annotations:13.0.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.junit.jupiter:junit-jupiter-api:5.1.0.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-api/5.1.0/370218fbc7ce9cf0600c4b5db400bccdf0c01a48/junit-jupiter-api-5.1.0.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.junit.jupiter:junit-jupiter-engine:5.1.0.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-engine/5.1.0/c54b96b465bb5b49c7708d734a4180dd95422754/junit-jupiter-engine-5.1.0.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.junit.platform:junit-platform-commons:1.1.0.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-commons/1.1.0/d6aa21029f9cedfb4cc8a9e9efc0bd97987205b8/junit-platform-commons-1.1.0.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.junit.platform:junit-platform-engine:1.1.0.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-engine/1.1.0/2596bd4d909e7ea8d029272db4338075445d731b/junit-platform-engine-1.1.0.jar"/>
+  </path>
+  
+  <path id="library.gradle:_org.opentest4j:opentest4j:1.0.0.classpath">
+    <pathelement location="${basedir}/../../../../../../../.gradle/caches/modules-2/files-2.1/org.opentest4j/opentest4j/1.0.0/6f09c598e9ff64bf0ce2fa7e7de49a99ba83c0b4/opentest4j-1.0.0.jar"/>
+  </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <fileset dir="${javac2.home}">
+      <include name="javac2.jar"/>
+      <include name="jdom.jar"/>
+      <include name="asm-all*.jar"/>
+      <include name="forms-*.jar"/>
+    </fileset>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module dis_sem2_juraj_macak -->
+  
+  <dirname property="module.dis_sem2_juraj_macak.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.dis_sem2_juraj_macak" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.dis_sem2_juraj_macak" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.dis_sem2_juraj_macak" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.dis_sem2_juraj_macak" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="dis_sem2_juraj_macak.output.dir" value="${module.dis_sem2_juraj_macak.basedir}/out/production/dis_sem2_juraj_macak"/>
+  <property name="dis_sem2_juraj_macak.testoutput.dir" value="${module.dis_sem2_juraj_macak.basedir}/out/test/dis_sem2_juraj_macak"/>
+  
+  <path id="dis_sem2_juraj_macak.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="dis_sem2_juraj_macak.module.production.classpath">
+    <path refid="${module.jdk.classpath.dis_sem2_juraj_macak}"/>
+  </path>
+  
+  <path id="dis_sem2_juraj_macak.runtime.production.module.classpath">
+    <pathelement location="${dis_sem2_juraj_macak.output.dir}"/>
+  </path>
+  
+  <path id="dis_sem2_juraj_macak.module.classpath">
+    <path refid="${module.jdk.classpath.dis_sem2_juraj_macak}"/>
+    <pathelement location="${dis_sem2_juraj_macak.output.dir}"/>
+  </path>
+  
+  <path id="dis_sem2_juraj_macak.runtime.module.classpath">
+    <pathelement location="${dis_sem2_juraj_macak.testoutput.dir}"/>
+    <pathelement location="${dis_sem2_juraj_macak.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.dis_sem2_juraj_macak">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.dis_sem2_juraj_macak">
+    <patternset refid="excluded.from.module.dis_sem2_juraj_macak"/>
+  </patternset>
+  
+  
+  <target name="compile.module.dis_sem2_juraj_macak" depends="compile.module.dis_sem2_juraj_macak.production,compile.module.dis_sem2_juraj_macak.tests" description="Compile module dis_sem2_juraj_macak"/>
+  
+  <target name="compile.module.dis_sem2_juraj_macak.production" depends="register.custom.compilers" description="Compile module dis_sem2_juraj_macak; production classes"/>
+  
+  <target name="compile.module.dis_sem2_juraj_macak.tests" depends="register.custom.compilers,compile.module.dis_sem2_juraj_macak.production" description="compile module dis_sem2_juraj_macak; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.dis_sem2_juraj_macak" description="cleanup module">
+    <delete dir="${dis_sem2_juraj_macak.output.dir}"/>
+    <delete dir="${dis_sem2_juraj_macak.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module dis_sem2_juraj_macak_main -->
+  
+  <dirname property="module.dis_sem2_juraj_macak_main.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.dis_sem2_juraj_macak_main" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.dis_sem2_juraj_macak_main" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.dis_sem2_juraj_macak_main" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.dis_sem2_juraj_macak_main" value="-encoding UTF-8 -source 8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="dis_sem2_juraj_macak_main.output.dir" value="${module.dis_sem2_juraj_macak_main.basedir}/out/production/classes"/>
+  <property name="dis_sem2_juraj_macak_main.testoutput.dir" value="${module.dis_sem2_juraj_macak_main.basedir}/out/production/classes"/>
+  
+  <path id="dis_sem2_juraj_macak_main.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="dis_sem2_juraj_macak_main.module.production.classpath">
+    <path refid="${module.jdk.classpath.dis_sem2_juraj_macak_main}"/>
+    <path refid="library.gradle:_no.tornado:tornadofx:1.7.17.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-reflect:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.glassfish:javax.json:1.1.2.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.gradle:_javax.json:javax.json-api:1.1.2.classpath"/>
+  </path>
+  
+  <path id="dis_sem2_juraj_macak_main.runtime.production.module.classpath">
+    <pathelement location="${dis_sem2_juraj_macak_main.output.dir}"/>
+    <path refid="library.gradle:_no.tornado:tornadofx:1.7.17.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-reflect:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.glassfish:javax.json:1.1.2.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.gradle:_javax.json:javax.json-api:1.1.2.classpath"/>
+  </path>
+  
+  <path id="dis_sem2_juraj_macak_main.module.classpath">
+    <path refid="${module.jdk.classpath.dis_sem2_juraj_macak_main}"/>
+    <pathelement location="${dis_sem2_juraj_macak_main.output.dir}"/>
+    <path refid="library.gradle:_no.tornado:tornadofx:1.7.17.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-reflect:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.glassfish:javax.json:1.1.2.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.gradle:_javax.json:javax.json-api:1.1.2.classpath"/>
+  </path>
+  
+  <path id="dis_sem2_juraj_macak_main.runtime.module.classpath">
+    <pathelement location="${dis_sem2_juraj_macak_main.output.dir}"/>
+    <path refid="library.gradle:_no.tornado:tornadofx:1.7.17.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-reflect:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.glassfish:javax.json:1.1.2.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.gradle:_javax.json:javax.json-api:1.1.2.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.dis_sem2_juraj_macak_main">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.dis_sem2_juraj_macak_main">
+    <patternset refid="excluded.from.module.dis_sem2_juraj_macak_main"/>
+  </patternset>
+  
+  <path id="dis_sem2_juraj_macak_main.module.sourcepath">
+    <dirset dir="${module.dis_sem2_juraj_macak_main.basedir}/src/main">
+      <include name="kotlin"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.dis_sem2_juraj_macak_main" depends="compile.module.dis_sem2_juraj_macak_main.production,compile.module.dis_sem2_juraj_macak_main.tests" description="Compile module dis_sem2_juraj_macak_main"/>
+  
+  <target name="compile.module.dis_sem2_juraj_macak_main.production" depends="register.custom.compilers" description="Compile module dis_sem2_juraj_macak_main; production classes">
+    <mkdir dir="${dis_sem2_juraj_macak_main.output.dir}"/>
+    <javac2 destdir="${dis_sem2_juraj_macak_main.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.dis_sem2_juraj_macak_main}/javac">
+      <compilerarg line="${compiler.args.dis_sem2_juraj_macak_main}"/>
+      <bootclasspath refid="dis_sem2_juraj_macak_main.module.bootclasspath"/>
+      <classpath refid="dis_sem2_juraj_macak_main.module.production.classpath"/>
+      <src refid="dis_sem2_juraj_macak_main.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.dis_sem2_juraj_macak_main"/>
+    </javac2>
+    
+    <copy todir="${dis_sem2_juraj_macak_main.output.dir}">
+      <fileset dir="${module.dis_sem2_juraj_macak_main.basedir}/src/main/kotlin">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.dis_sem2_juraj_macak_main.tests" depends="register.custom.compilers,compile.module.dis_sem2_juraj_macak_main.production" description="compile module dis_sem2_juraj_macak_main; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.dis_sem2_juraj_macak_main" description="cleanup module">
+    <delete dir="${dis_sem2_juraj_macak_main.output.dir}"/>
+    <delete dir="${dis_sem2_juraj_macak_main.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module dis_sem2_juraj_macak_test -->
+  
+  <dirname property="module.dis_sem2_juraj_macak_test.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.dis_sem2_juraj_macak_test" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.dis_sem2_juraj_macak_test" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.dis_sem2_juraj_macak_test" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.dis_sem2_juraj_macak_test" value="-encoding UTF-8 -source 8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="dis_sem2_juraj_macak_test.output.dir" value="undefined"/>
+  <property name="dis_sem2_juraj_macak_test.testoutput.dir" value="${module.dis_sem2_juraj_macak_test.basedir}/out/test/classes"/>
+  
+  <path id="dis_sem2_juraj_macak_test.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="dis_sem2_juraj_macak_test.module.production.classpath">
+    <path refid="${module.jdk.classpath.dis_sem2_juraj_macak_test}"/>
+    <pathelement location="${dis_sem2_juraj_macak_main.output.dir}"/>
+    <path refid="library.gradle:_no.tornado:tornadofx:1.7.17.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.junit.jupiter:junit-jupiter-api:5.1.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-reflect:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.glassfish:javax.json:1.1.2.classpath"/>
+    <path refid="library.gradle:_org.junit.platform:junit-platform-commons:1.1.0.classpath"/>
+    <path refid="library.gradle:_org.apiguardian:apiguardian-api:1.0.0.classpath"/>
+    <path refid="library.gradle:_org.opentest4j:opentest4j:1.0.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.gradle:_javax.json:javax.json-api:1.1.2.classpath"/>
+  </path>
+  
+  <path id="dis_sem2_juraj_macak_test.runtime.production.module.classpath">
+    <path refid="dis_sem2_juraj_macak_main.runtime.production.module.classpath"/>
+    <path refid="library.gradle:_no.tornado:tornadofx:1.7.17.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.junit.jupiter:junit-jupiter-api:5.1.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-reflect:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.junit.jupiter:junit-jupiter-engine:5.1.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.glassfish:javax.json:1.1.2.classpath"/>
+    <path refid="library.gradle:_org.junit.platform:junit-platform-commons:1.1.0.classpath"/>
+    <path refid="library.gradle:_org.apiguardian:apiguardian-api:1.0.0.classpath"/>
+    <path refid="library.gradle:_org.opentest4j:opentest4j:1.0.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.junit.platform:junit-platform-engine:1.1.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.gradle:_javax.json:javax.json-api:1.1.2.classpath"/>
+  </path>
+  
+  <path id="dis_sem2_juraj_macak_test.module.classpath">
+    <path refid="${module.jdk.classpath.dis_sem2_juraj_macak_test}"/>
+    <pathelement location="${dis_sem2_juraj_macak_main.output.dir}"/>
+    <path refid="library.gradle:_no.tornado:tornadofx:1.7.17.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.junit.jupiter:junit-jupiter-api:5.1.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-reflect:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.junit.jupiter:junit-jupiter-engine:5.1.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.glassfish:javax.json:1.1.2.classpath"/>
+    <path refid="library.gradle:_org.junit.platform:junit-platform-commons:1.1.0.classpath"/>
+    <path refid="library.gradle:_org.apiguardian:apiguardian-api:1.0.0.classpath"/>
+    <path refid="library.gradle:_org.opentest4j:opentest4j:1.0.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.junit.platform:junit-platform-engine:1.1.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.gradle:_javax.json:javax.json-api:1.1.2.classpath"/>
+  </path>
+  
+  <path id="dis_sem2_juraj_macak_test.runtime.module.classpath">
+    <pathelement location="${dis_sem2_juraj_macak_test.testoutput.dir}"/>
+    <path refid="dis_sem2_juraj_macak_main.runtime.module.classpath"/>
+    <path refid="library.gradle:_no.tornado:tornadofx:1.7.17.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.junit.jupiter:junit-jupiter-api:5.1.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-reflect:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.junit.jupiter:junit-jupiter-engine:5.1.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.glassfish:javax.json:1.1.2.classpath"/>
+    <path refid="library.gradle:_org.junit.platform:junit-platform-commons:1.1.0.classpath"/>
+    <path refid="library.gradle:_org.apiguardian:apiguardian-api:1.0.0.classpath"/>
+    <path refid="library.gradle:_org.opentest4j:opentest4j:1.0.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains.kotlin:kotlin-stdlib-common:1.2.60.classpath"/>
+    <path refid="library.gradle:_org.junit.platform:junit-platform-engine:1.1.0.classpath"/>
+    <path refid="library.gradle:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.gradle:_javax.json:javax.json-api:1.1.2.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.dis_sem2_juraj_macak_test">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.dis_sem2_juraj_macak_test">
+    <patternset refid="excluded.from.module.dis_sem2_juraj_macak_test"/>
+  </patternset>
+  
+  
+  <target name="compile.module.dis_sem2_juraj_macak_test" depends="compile.module.dis_sem2_juraj_macak_test.production,compile.module.dis_sem2_juraj_macak_test.tests" description="Compile module dis_sem2_juraj_macak_test"/>
+  
+  <target name="compile.module.dis_sem2_juraj_macak_test.production" depends="register.custom.compilers,compile.module.dis_sem2_juraj_macak_main" description="Compile module dis_sem2_juraj_macak_test; production classes"/>
+  
+  <target name="compile.module.dis_sem2_juraj_macak_test.tests" depends="register.custom.compilers,compile.module.dis_sem2_juraj_macak_test.production" description="compile module dis_sem2_juraj_macak_test; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.dis_sem2_juraj_macak_test" description="cleanup module">
+    <delete dir="${dis_sem2_juraj_macak_test.output.dir}"/>
+    <delete dir="${dis_sem2_juraj_macak_test.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.dis_sem2_juraj_macak, clean.module.dis_sem2_juraj_macak_main, clean.module.dis_sem2_juraj_macak_test, clean.artifact.dis_sem2_juraj_macak_main" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.dis_sem2_juraj_macak, compile.module.dis_sem2_juraj_macak_main, compile.module.dis_sem2_juraj_macak_test" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.dis_sem2_juraj_macak_main" value="${basedir}/out/artifacts/dis_sem2_juraj_macak_main"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="artifact.temp.output.dis_sem2_juraj_macak_main" value="${artifacts.temp.dir}/dis_sem2_juraj_macak_main.jar"/>
+    <taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="${jdk.home.1.8}/lib/ant-javafx.jar"/>
+  </target>
+  
+  <target name="clean.artifact.dis_sem2_juraj_macak_main" description="clean dis_sem2_juraj_macak_main artifact output">
+    <delete dir="${artifact.output.dis_sem2_juraj_macak_main}"/>
+  </target>
+  
+  <target name="artifact.dis_sem2_juraj_macak_main" depends="init.artifacts, compile.module.dis_sem2_juraj_macak_main" description="Build &#39;dis_sem2_juraj_macak_main&#39; artifact" xmlns:fx="javafx:com.sun.javafx.tools.ant">
+    <mkdir dir="${artifact.output.dis_sem2_juraj_macak_main}"/>
+    <copy todir="${artifact.temp.output.dis_sem2_juraj_macak_main}">
+      <fileset dir="${dis_sem2_juraj_macak_main.output.dir}"/>
+    </copy>
+    <fx:fileset id="all_but_dis_sem2_juraj_macak_main" dir="${artifact.temp.output.dis_sem2_juraj_macak_main}" includes="**/*.jar">
+      <exclude name="dis_sem2_juraj_macak_main.jar"/>
+    </fx:fileset>
+    <fx:fileset id="all_dis_sem2_juraj_macak_main" dir="${artifact.temp.output.dis_sem2_juraj_macak_main}" includes="**/*.jar"/>
+    <fx:application id="dis_sem2_juraj_macak_main_id" name="dis_sem2_juraj_macak_main" mainClass="app.AppStarter"/>
+    <fx:jar destfile="${artifact.temp.output.dis_sem2_juraj_macak_main}/dis_sem2_juraj_macak_main.jar">
+      <fx:application refid="dis_sem2_juraj_macak_main_id"/>
+      <fileset dir="${artifact.temp.output.dis_sem2_juraj_macak_main}" excludes="**/*.jar"/>
+      <fx:resources>
+        <fx:fileset refid="all_but_dis_sem2_juraj_macak_main"/>
+      </fx:resources>
+      <manifest>
+        <attribute name="Implementation-Title" value="DIS2"/>
+        <attribute name="Implementation-Version" value=""/>
+        <attribute name="Implementation-Vendor" value="Juraj Macák"/>
+      </manifest>
+    </fx:jar>
+    <fx:deploy width="600" height="400" updatemode="background" outdir="${artifact.temp.output.dis_sem2_juraj_macak_main}/deploy" outfile="dis_sem2_juraj_macak_main">
+      <fx:application refid="dis_sem2_juraj_macak_main_id"/>
+      <fx:info title="DIS2" vendor="Juraj Macák"/>
+      <fx:resources>
+        <fx:fileset refid="all_dis_sem2_juraj_macak_main"/>
+      </fx:resources>
+    </fx:deploy>
+    <copy todir="${artifact.output.dis_sem2_juraj_macak_main}">
+      <fileset dir="${artifact.temp.output.dis_sem2_juraj_macak_main}/deploy"/>
+    </copy>
+    <delete includeemptydirs="true">
+      <fileset dir="${artifact.temp.output.dis_sem2_juraj_macak_main}"/>
+    </delete>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.dis_sem2_juraj_macak_main" description="Build all artifacts">
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>
